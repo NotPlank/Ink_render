@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>✨Ink Render - F.A.Q✨</title>
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <link rel="stylesheet" href="estilo.css">
+  <!-- <script src="script.js" type="module"></script> -->
+  <link rel="icon" type="image/jpg" href="imagenes/mini.jpg">
+</head>
+
+<body>
+  <div class="wrapper">
+    <div id="header-placeholder"></div>
+    <main>
+      <div class="container">
+        <div class="row">
+          <div class="col">
+            <section class="faq-section" id="acc">
+              <div class="faq-container">
+                <div class="faq-heading">
+                  <p class="eyebrow">Frequently Asked Questions</p>
+                  <h1>Preguntas Frecuentes</h1>
+                  <p class="intro">
+                    Guía básica con dudas sobre el funcionamiento de la web.
+                  </p>
+                </div>
+
+                <div class="faq-list">
+                  <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                      <spam>¿Qué es <spam
+                          style="font-family: 'Jacquard 12'; font-size: 1.3rem; font-weight: 100;color:#8825f8;">Ink
+                          Render</spam> y para
+                        qué sirve?</spam>
+                      <span class="faq-icon" aria-hidden="true">+</span>
+                    </button>
+
+                    <div class="faq-answer">
+                      <div class="faq-answer-content">
+                        <p>
+                          Ink Render es una herramienta de previsualización y edición en el
+                          navegador diseñada para el sector del tatuaje. Sirve para resolver dos
+                          problemas críticos antes de empezar a tatuar:Comprobar la
+                          posicion.Preparar archivos de impresión: Te permite limpiar fondos y
+                          convertir cualquier foto o ilustración en líneas de contorno puras
+                          listas para imprimir en papel de calco o stencil.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                      <span>¿Qué tipo de archivos puedo subir al simulador 3D?</span>
+                      <span class="faq-icon" aria-hidden="true">+</span>
+                    </button>
+
+                    <div class="faq-answer">
+                      <div class="faq-answer-content">
+                        <p>
+                          Para obtener el mejor resultado, se recomienda subir archivos en formato PNG
+                          con fondo transparente. También puedes hacer uso del editor de fotos para
+                          quitar el fondo a tu imagen.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                      <span>¿Cómo coloco un tatuaje sobre el modelo en 3D?</span>
+                      <span class="faq-icon" aria-hidden="true">+</span>
+                    </button>
+
+                    <div class="faq-answer">
+                      <div class="faq-answer-content">
+                        <p>
+                          El flujo de trabajo es muy sencillo:</p>
+                        <p> • Sube tu diseño en formato PNG desde el panel lateral derecho.</p>
+                        <p> • Haz clic sobre la miniatura cargada para seleccionarla.</p>
+                        <p> • Haz clic directamente sobre la zona del cuerpo del modelo donde quieras
+                          proyectarla.</p>
+                        <p>El software abrirá un menú flotante para escalar, rotar y afinar
+                          la posición antes de fijarlo.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                      <span>El extractor de stencil no me detecta bien las líneas, ¿cómo lo soluciono?</span>
+                      <span class="faq-icon" aria-hidden="true">+</span>
+                    </button>
+
+                    <div class="faq-answer">
+                      <div class="faq-answer-content">
+                        <p>
+                          Si las líneas salen demasiado gruesas o desaparecen, ajusta el deslizador de
+                          Sensibilidad.</p>
+                        <p>Las fotos con sombras complejas o baja resolución pueden requerir que uses
+                          primero el botón de Quitar fondo (con el cuentagotas) para aislar el
+                          elemento principal antes de activar la traducción a línea.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                      <span>¿Mis imágenes o diseños se suben a algún servidor?</span>
+                      <span class="faq-icon" aria-hidden="true">+</span>
+                    </button>
+
+                    <div class="faq-answer">
+                      <div class="faq-answer-content">
+                        <p>
+                          No. Todo el procesamiento de imágenes de Ink Render se ejecuta de forma 100%
+                          local en tu navegador.</p>
+                        <p>Tus archivos nunca se envían a ningún servidor externo, garantizando la
+                          privacidad absoluta de tus diseños.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+          </div>
+          </section>
+        </div>
+      </div>
+  </div>
+
+  </main>
+  <div id="footer-placeholder"></div>
+  </div>
+  <script>
+    // FAQ
+    const faqQuestions = document.querySelectorAll(".faq-question");
+    faqQuestions.forEach((question) => {
+      question.addEventListener("click", () => {
+        const currentItem = question.closest(".faq-item");
+        const isOpen = currentItem.classList.contains("active");
+        document.querySelectorAll(".faq-item").forEach((item) => {
+          item.classList.remove("active");
+          const bacc = item.querySelector(".faq-question");
+          const icon = item.querySelector(".faq-icon");
+          bacc.setAttribute("aria-expanded", "false");
+          icon.textContent = "+";
+        });
+        if (!isOpen) {
+          currentItem.classList.add("active");
+
+          question.setAttribute("aria-expanded", "true");
+
+          const icon = question.querySelector(".faq-icon");
+          icon.textContent = "−";
+        }
+      });
+    });
+
+
+  </script>
+  <script src="js/bootstrap.bundle.min.js"></script>
+  <script src="header.js"></script>
+  <script src="footer.js"></script>
+</body>
+
+</html>

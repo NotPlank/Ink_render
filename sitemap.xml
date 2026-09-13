@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+       xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+       xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+
+    <!--  ________________Index_____________  -->
+    <url>
+        <loc>https://ink-render.com</loc>
+        <lastmod>2026-09-10T20:08:51+05:00</lastmod>
+
+        <image:image>
+            <image:loc>https://ink-render.com</image:loc>
+        </image:image>
+        <image:image>
+            <image:loc>https://ink-render.com</image:loc>
+        </image:image>
+        <image:image>
+            <image:loc>https://ink-render.com</image:loc>
+        </image:image>
+
+        <video:video>
+            <video:thumbnail_loc>https://ink-render.com/#</video:thumbnail_loc>
+            <video:title>Video demostración de herramientas 3D</video:title>
+            <video:description>El video muestra una demostración de cómo funcionan las herramientas de la web.</video:description>
+            <video:content_loc>https://ink-render/videos/#</video:content_loc>
+            <video:duration>180#</video:duration> 
+            <video:rating>4.2</video:rating>
+            <video:view_count>12345</video:view_count>   
+            <video:publication_date>2026-09-10T19:20:30+01:00</video:publication_date>
+            <video:family_friendly>yes</video:family_friendly>  
+            <video:live>no</video:live>
+        </video:video>
+
+    </url>
+
+    <!--  ________________Simulador 3D_____________  -->
+    <url>
+        <loc>https://ink-render.com/simulador#</loc>
+        <lastmod>2026-09-10T20:08:51+05:00</lastmod>
+    </url>
+
+    <!--  ________________Stencil_____________  -->
+    <url>
+        <loc>https://ink-render.com/stencil</loc>
+        <lastmod>2026-09-10T20:08:51+05:00</lastmod>
+    </url>
+    
+    <!--  ________________Galeria_____________  -->
+    <url>
+        <loc>https://ink-render.com/galeria</loc>
+        <lastmod>2026-09-10T20:08:51+05:00</lastmod>
+        <image:image>
+            <image:loc>https://ink-render.com</image:loc>
+        </image:image>
+        <image:image>
+            <image:loc>https://ink-render.com</image:loc>
+        </image:image>
+        <image:image>
+            <image:loc>https://ink-render.com</image:loc>
+        </image:image>
+        <image:image>
+            <image:loc>https://ink-render.com</image:loc>
+        </image:image>
+    </url>
+
+    <!--  ________________FAQ_____________  -->
+    <url>
+        <loc>https://ink-render.com/faq</loc>
+        <lastmod>2026-09-10T20:08:51+05:00</lastmod>
+    </url>
+    
+    <!--  ________________Contacto_____________  -->
+    <url>
+        <loc>https://ink-render.com/contacto</loc>
+        <lastmod>2026-09-10T20:08:51+05:00</lastmod>
+    </url>
+    
+</urlset>

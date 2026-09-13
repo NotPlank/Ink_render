@@ -1,0 +1,155 @@
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+/*---------------- QUERYS --------------*/
+@media screen and (min-width: 768px) and (max-width: 991.98px) {
+	.tit{
+		transform: translateY(10vh);
+		
+	}
+
+	p{
+		transform: translateY(10vh);
+	}
+
+}
+@media screen and (min-width: 475px) and (max-width: 768px){
+	.tit{
+		transform: translateY(2vh);
+	}
+	.menu{
+		font-size: 0.9rem;
+	}
+	.logo{
+		font-size: 1.5rem;
+	}
+	.pet-container{
+		transform: scale(0.6);
+	}
+}
+/*---------------- GENERAL -------------*/
+@font-face {
+    font-family: 'Jacquard 12';
+    src: url('fonts/Jacquard12-Regular.woff2') format('woff2'),
+        url('fonts/Jacquard12-Regular.woff') format('woff'),
+        url('fonts/Jacquard12-Regular.ttf') format('truetype'),
+        url('fonts/Jacquard12-Regular.svg#Jacquard12-Regular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Ruritania-Outline';
+    src: url('fonts/Ruritania-Outline.woff2') format('woff2'),
+        url('fonts/Ruritania-Outline.woff') format('woff'),
+        url('fonts/Ruritania-Outline.ttf') format('truetype'),
+        url('fonts/Ruritania-Outline.svg#Ruritania-Outline') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+/*---------------- DISEÑO --------------*/
+li{
+	font-size: 1.5rem;
+}
+h1{
+	font-family: 'Jacquard 12';
+	font-size: 2rem;
+	margin: 1vh;
+	color: black;
+}
+h2{
+	font-family: 'Ruritania-Outline';
+	font-size: 4.5rem;
+	margin: 2vh;
+	color: rgb(0, 0, 0);
+	margin-top: 7vh;
+	
+}
+p{
+	font-family: 'Jacquard 12';
+	font-size: 1.5rem;
+	color: black;
+	margin: 5vh;
+}
+a{
+	font-family: 'Jacquard 12';
+	font-size: 1.7rem;
+	color: black;
+	text-decoration: none;	
+	margin-top: 2vh;
+	
+}
+html{
+    background-color: black;
+}
+/*---------------- ESTRUCTURA --------------*/
+header{
+	width: 100%;
+	height: 8vh;
+	background-color: rgb(255, 255, 255);
+	
+}
+main{
+	width: 100%;
+	height: 90vh;
+	background: #ffffff;
+	background: linear-gradient(179deg, rgba(255, 255, 255, 1) 8%, rgba(0, 0, 0, 1) 83%);
+}
+.accordion-button:not(.collapsed) {
+    background: #FEFEFE;
+    background: linear-gradient(90deg, rgba(254, 254, 254, 1) 26%, rgba(189, 189, 189, 1) 55%, rgba(255, 255, 255, 1) 79%);
+    border: 1px solid white;
+    font-size: 1rem;
+    
+}
+.accordion-button{
+    border: 2px solid white;
+    font-size: 1rem;
+    filter: multiply;
+}
+.accordion-button:hover{
+    box-shadow: 2px 2px 20px 5px white; 
+}

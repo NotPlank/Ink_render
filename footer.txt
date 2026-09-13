@@ -1,0 +1,16 @@
+document.getElementById('footer-placeholder').innerHTML = "
+<footer class="fixed-bottom">
+            <div class="container-fluid h-100 d-flex justify-content-center justify-content-md-end align-items-start">
+                <div class="row h-100 align-items-start">
+
+                    <div class="col-xl-6 col-md-6 col-3">
+                        <!-- Aquí puedes poner un logo o dejarlo vacío -->
+                    </div>
+
+                    <div class="col-xl-6 col-md-6 col-9 pet-container">
+                        <iframe src="pet.html" id="pet-frame" scrolling="no"></iframe>
+                    </div>
+
+                </div>
+            </div>
+        </footer>"

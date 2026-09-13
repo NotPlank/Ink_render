@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✨Ink Render - Galería✨</title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="estilo.css">
+    <link rel="icon" type="image/jpg" href="imagenes/mini.jpg">
+</head>
+
+<body>
+    <div class="wrapper">
+        <div id="header-placeholder"></div>
+        <main>
+            <div class="container-fluid col-12 text-center" id="principal">
+                <div class="xp-v col-12">
+                    <div class="xp-t col-12"><span>Galería</span>
+                        <div>
+                            <div class="xp-btn">_</div>
+                            <div class="xp-btn">❐</div>
+                            <div class="xp-btn close" onclick="window.location.href='index.html'"
+                                style="cursor:pointer;" title="Cerrar y volver al inicio">X</div>
+                        </div>
+                    </div>
+                    <div class="cis-01">
+                        <input type="radio" name="cis-01" id="cis-01-1" checked>
+                        <input type="radio" name="cis-01" id="cis-01-2">
+                        <input type="radio" name="cis-01" id="cis-01-3">
+                        <input type="radio" name="cis-01" id="cis-01-4">
+
+                        <div class="cis-01__viewport">
+                            <div class="cis-01__track">
+                                <figure class="cis-01__slide">
+                                    <picture>
+                                        <source media="(max-width: 700px)" srcset="imagenes/tattoo1movil.png">
+                                        <source media="(min-width: 701px)" srcset="imagenes/tattoo1tablet.png">
+                                        <img src="imagenes/tattoo1pc.png" alt="Fog rolling over a pine ridge at dawn">
+
+                                    </picture>
+                                    <figcaption class="cis-01__cap"><span class="cis-01__k">01 —
+                                            Ridgeline</span>Alpine
+                                        fog, first light
+                                    </figcaption>
+                                </figure>
+                                <figure class="cis-01__slide">
+                                    <picture>
+                                        <source media="(max-width: 700px)" srcset="imagenes/tattoo2movil.png">
+                                        <source media="(min-width: 700px)" srcset="imagenes/tattoo2tablet.png">
+                                        <img src="imagenes/tattoo2pc.png" alt="Fog rolling over a pine ridge at dawn">
+
+                                    </picture>
+                                    <figcaption class="cis-01__cap"><span class="cis-01__k">02 —
+                                            Passage</span>Desert
+                                        route, midday
+                                    </figcaption>
+                                </figure>
+                                <figure class="cis-01__slide">
+                                    <picture>
+                                        <source media="(max-width: 700px)" srcset="imagenes/tattoo3movil.png">
+                                        <source media="(min-width: 700px)" srcset="imagenes/tattoo3tablet.png">
+                                        <img src="imagenes/tattoo3pc.png" alt="Fog rolling over a pine ridge at dawn">
+
+                                    </picture>
+                                    <figcaption class="cis-01__cap"><span class="cis-01__k">03 —
+                                            Overlook</span>Rooftops, weather moving
+                                        in</figcaption>
+                                </figure>
+                                <figure class="cis-01__slide">
+                                    <picture>
+                                        <source media="(max-width: 700px)" srcset="imagenes/tattoo4movil.png">
+                                        <source media="(min-width: 700px)" srcset="imagenes/tattoo4tablet.png">
+                                        <img src="imagenes/tattoo4pc.png" alt="Fog rolling over a pine ridge at dawn">
+
+                                    </picture>
+                                    <figcaption class="cis-01__cap"><span class="cis-01__k">03 —
+                                            Overlook</span>Rooftops, weather moving
+                                        in</figcaption>
+                                </figure>
+                            </div>
+                        </div>
+
+                        <div class="cis-01__arrows" aria-hidden="true">
+                            <label class="cis-01__arw a-prev p1" for="cis-01-4"></label><label
+                                class="cis-01__arw a-next n1" for="cis-01-2"></label>
+                            <label class="cis-01__arw a-prev p2" for="cis-01-1"></label><label
+                                class="cis-01__arw a-next n2" for="cis-01-3"></label>
+                            <label class="cis-01__arw a-prev p3" for="cis-01-2"></label><label
+                                class="cis-01__arw a-next n3" for="cis-01-4"></label>
+                            <label class="cis-01__arw a-prev p4" for="cis-01-3"></label><label
+                                class="cis-01__arw a-next n4" for="cis-01-1"></label>
+                        </div>
+
+                        <div class="cis-01__dots" role="tablist" aria-label="Choose slide">
+                            <label class="cis-01__dot" for="cis-01-1" aria-label="Slide 1"></label>
+                            <label class="cis-01__dot" for="cis-01-2" aria-label="Slide 2"></label>
+                            <label class="cis-01__dot" for="cis-01-3" aria-label="Slide 3"></label>
+                            <label class="cis-01__dot" for="cis-01-4" aria-label="Slide 4"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+        <div id="footer-placeholder"></div>
+    </div>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="header.js"></script>
+    <script src="footer.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✨Ink Render - Stencil✨</title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="estilo.css">
+    <link rel="icon" type="image/jpg" href="imagenes/mini.jpg">
+</head>
+
+<body>
+    <div class="wrapper">
+        <div id="header-placeholder"></div>
+        <main>
+            <div class="container-fluid col-12 text-center" id="principal">
+                <div class="xp-v col-12">
+                    <div class="xp-t col-12">
+                        <span>Stencil Maker</span>
+                        <div>
+                            <div class="xp-btn">_</div>
+                            <div class="xp-btn">❐</div>
+                            <div class="xp-btn close" onclick="window.location.href='index.html'" style="cursor:pointer;" title="Cerrar y volver al inicio">X</div>
+                        </div>
+                    </div>
+ 
+                    <div class="xp-c col-12" id="editor-app">
+ 
+                        <!--------------------   Subir archivos  ----------------->
+                        <div class="zona-subida" id="zona-subida">
+                            <input type="file" id="input-imagenes" accept="image/png, image/jpeg" multiple class="form-control">
+                            <p class="texto-ayuda">Sube tus fotos o dibujos (JPG o PNG). Puedes subir varios a la vez.</p>
+                        </div>
+ 
+                        <!--------------------  Galeria  ------------------- -->
+                        <div class="galeria-imagenes" id="galeria-imagenes"></div>
+ 
+                        <!------------------  Modo edicion  -------------------->
+                        <div class="modo-edicion d-none" id="modo-edicion">
+                            <div class="editor-layout">
+ 
+                                <!-- Visor central -->
+                                <div class="zona-canvas">
+                                    <div class="canvas-wrapper" id="canvas-wrapper">
+                                        <canvas id="canvas-preview"></canvas>
+                                        <div class="controles-visor">
+                                            <button class="btn-icono" id="btn-fondo" title="Ver transparencia (cuadrícula)">▦</button>
+                                            <button class="btn-icono" id="btn-zoom-reset" title="Restablecer zoom">100%</button>
+                                        </div>
+                                    </div>
+                                    <p class="aviso-zoom">🖱️ Rueda del ratón sobre la imagen para hacer zoom</p>
+                                </div>
+ 
+                                <!------------- Panel lateral de ajustes ----------->
+                                <div class="panel-ajustes">
+                                    <h3>Ajustes del Stencil</h3>
+ 
+                                    <div class="subtitulo-grupo">Imagen base</div>
+ 
+                                    <div class="ajuste-item">
+                                        <label for="ajuste-brillo"><span>Brillo</span> <span id="valor-brillo">0</span></label>
+                                        <input type="range" id="ajuste-brillo" min="-100" max="100" value="0">
+                                    </div>
+ 
+                                    <div class="ajuste-item">
+                                        <label for="ajuste-contraste"><span>Contraste</span> <span id="valor-contraste">0</span></label>
+                                        <input type="range" id="ajuste-contraste" min="-100" max="100" value="0">
+                                    </div>
+ 
+                                    <div class="ajuste-item">
+                                        <label for="ajuste-nitidez"><span>Nitidez / Enfoque</span> <span id="valor-nitidez">30</span></label>
+                                        <input type="range" id="ajuste-nitidez" min="0" max="100" value="30">
+                                    </div>
+ 
+                                    <div class="ajuste-item">
+                                        <label for="ajuste-suavizado"><span>Reducir ruido</span> <span id="valor-suavizado">1</span></label>
+                                        <input type="range" id="ajuste-suavizado" min="0" max="4" value="1">
+                                    </div>
+ 
+                                    <div class="subtitulo-grupo">Líneas del contorno</div>
+ 
+                                    <div class="ajuste-item">
+                                        <label for="ajuste-sensibilidad"><span>Sensibilidad</span> <span id="valor-sensibilidad">75</span></label>
+                                        <input type="range" id="ajuste-sensibilidad" min="10" max="200" value="75">
+                                    </div>
+ 
+                                    <div class="ajuste-item">
+                                        <label for="ajuste-detalle"><span>Líneas secundarias (grises)</span> <span id="valor-detalle">20</span></label>
+                                        <input type="range" id="ajuste-detalle" min="0" max="100" value="20">
+                                    </div>
+ 
+                                    <div class="ajuste-item">
+                                        <label for="ajuste-grosor"><span>Grosor de línea</span> <span id="valor-grosor">0</span></label>
+                                        <input type="range" id="ajuste-grosor" min="0" max="6" value="0">
+                                    </div>
+ 
+                                    <div class="ajuste-item checkbox">
+                                        <input type="checkbox" id="ajuste-invertir">
+                                        <label for="ajuste-invertir">Líneas blancas (para fondos oscuros)</label>
+                                    </div>
+ 
+                                    <div class="acciones-edicion">
+                                        <button class="btn-edt" id="btn-guardar">💾 Guardar como PNG</button>
+                                        <button class="btn-edt secundario" id="btn-volver">← Volver a la galería</button>
+                                        <button class="btn-edt reset" id="btn-reset">↺ Restablecer ajustes</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+ 
+                    </div>
+                </div>
+            </div>
+        </main>
+        <div id="footer-placeholder"></div>
+    </div>
+
+    <script src="editor.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="header.js"></script>
+    <script src="footer.js"></script>
+
+</body>
+
+
+</html>
