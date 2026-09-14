@@ -107,6 +107,17 @@ let ultimoTatuajeMalla = null;
 let datosUltimoImpacto = null;
 const ventanaEditor = document.getElementById('ventana-editor-tatuaje');
 
+// Material reutilizado para el decal: antes se creaba uno nuevo en
+// CADA ajuste (mover/girar/escalar), lo cual era parte del motivo de
+// la lentitud. Ahora solo se crea una vez y se le cambia la textura.
+const materialDecal = new THREE.MeshStandardMaterial({
+    transparent: true,
+    depthTest: true,
+    depthWrite: false,
+    polygonOffset: true,
+    polygonOffsetFactor: -4
+});
+
 window.aplicarTatuaje = function (urlImagen) {
     textureLoader.load(urlImagen, (textura) => {
         textura.minFilter = THREE.LinearFilter;
@@ -114,6 +125,14 @@ window.aplicarTatuaje = function (urlImagen) {
 
         texturaTatuajeActiva = textura;
         console.log("Tatuaje listo. Haz clic en el modelo.");
+
+        // Pista visual: el cursor cambia mientras está "armado" un
+        // tatuaje, para que quede claro que el siguiente clic sobre
+        // el maniquí es el que lo coloca.
+        contenedor.style.cursor = 'crosshair';
+
+        // Aviso automático de la mascota (si existe en esta página)
+        avisarMascota('Ahora haz clic sobre el maniquí para colocar el tatuaje ahí 👆');
     },
         undefined,
         (error) => {
@@ -121,15 +140,27 @@ window.aplicarTatuaje = function (urlImagen) {
         });
 }
 
-function actualizarTatuajeEnTiempoReal() {
-    if (!datosUltimoImpacto || (!texturaTatuajeActiva && !ultimoTatuajeMalla)) return;
+// Envía un mensaje a la mascota del footer (pet.html, dentro de un
+// iframe) para que muestre un bocadillo con el texto indicado.
+// Si la mascota no está en esta página, simplemente no hace nada.
+function avisarMascota(texto) {
+    const iframePet = document.getElementById('pet-frame');
+    if (iframePet && iframePet.contentWindow) {
+        iframePet.contentWindow.postMessage(
+            { tipo: 'tip3d', texto: texto },
+            window.location.origin
+        );
+    }
+}
 
-    const texturaUsar = texturaTatuajeActiva || ultimoTatuajeMalla.material.map;
+function actualizarTatuajeEnTiempoReal() {
+    if (!datosUltimoImpacto || (!texturaTatuajeActiva && !materialDecal.map)) return;
+
+    const texturaUsar = texturaTatuajeActiva || materialDecal.map;
 
     if (ultimoTatuajeMalla) {
-        scene.remove(ultimoTatuajeMalla);
+        modeloGrupo.remove(ultimoTatuajeMalla);
         if (ultimoTatuajeMalla.geometry) ultimoTatuajeMalla.geometry.dispose();
-        if (ultimoTatuajeMalla.material) ultimoTatuajeMalla.material.dispose();
     }
 
     // Calcular posición desplazada localmente usando vectores directos de la superficie
@@ -155,17 +186,18 @@ function actualizarTatuajeEnTiempoReal() {
         tamañoFinal
     );
 
-    const materialDecal = new THREE.MeshStandardMaterial({
-        map: texturaUsar,
-        transparent: true,
-        depthTest: true,
-        depthWrite: false,
-        polygonOffset: true,
-        polygonOffsetFactor: -4
-    });
+    // CLAVE DEL ARREGLO: el decal se calcula en coordenadas del
+    // mundo, pero lo vamos a colgar de modeloGrupo. Convertimos su
+    // geometría al espacio LOCAL de modeloGrupo (aplicando su matriz
+    // inversa) para que, a partir de ahora, se mueva/gire/escale
+    // exactamente igual que el resto del cuerpo.
+    geometriaDecal.applyMatrix4(modeloGrupo.matrixWorld.clone().invert());
+
+    materialDecal.map = texturaUsar;
+    materialDecal.needsUpdate = true;
 
     ultimoTatuajeMalla = new THREE.Mesh(geometriaDecal, materialDecal);
-    scene.add(ultimoTatuajeMalla);
+    modeloGrupo.add(ultimoTatuajeMalla); // antes: scene.add(...)
 }
 
 contenedor.addEventListener('click', (evento) => {
@@ -211,6 +243,7 @@ contenedor.addEventListener('click', (evento) => {
 
         // Bloquear el puntero general y desplegar la ventana de edición XP
         texturaTatuajeActiva = null;
+        contenedor.style.cursor = 'default';
         if (ventanaEditor) ventanaEditor.style.display = 'block';
     }
 });
@@ -249,17 +282,29 @@ window.resetCamara = function () {
     controls.update();
 };
 
+// Agrupa varias llamadas seguidas (p.ej. clics rápidos en ➕/➖) en
+// una sola reconstrucción por frame, en vez de una por clic.
+let actualizacionTatuajePendiente = false;
+function solicitarActualizacionTatuaje() {
+    if (actualizacionTatuajePendiente) return;
+    actualizacionTatuajePendiente = true;
+    requestAnimationFrame(() => {
+        actualizacionTatuajePendiente = false;
+        actualizarTatuajeEnTiempoReal();
+    });
+}
+
 // ==========================================
 // 6. INTERFAZ: CONTROLES FLOTANTES DEL TATUAJE
 // ==========================================
 window.ajustarEscalaTatuaje = function (factor) {
     escalaTatuaje = Math.max(0.05, escalaTatuaje + factor);
-    actualizarTatuajeEnTiempoReal();
+    solicitarActualizacionTatuaje();
 };
 
 window.girarTatuaje = function (grados) {
     rotacionTatuaje = (rotacionTatuaje + grados) % 360;
-    actualizarTatuajeEnTiempoReal();
+    solicitarActualizacionTatuaje();
 };
 
 window.moverTatuaje = function (direccion) {
@@ -270,16 +315,51 @@ window.moverTatuaje = function (direccion) {
         case 'derecha': desplazamientoX -= pasoDesplazamiento; break;
         case 'izquierda': desplazamientoX += pasoDesplazamiento; break;
     }
-    actualizarTatuajeEnTiempoReal();
+    solicitarActualizacionTatuaje();
 };
 
 window.fijarTatuajeActual = function () {
-    // Romper las referencias temporales. El tatuaje queda grabado estático en la piel.
+    // Romper las referencias temporales. El tatuaje se queda donde
+    // está, colgado de modeloGrupo, así que seguirá moviéndose con
+    // el modelo aunque dejemos de editarlo.
     ultimoTatuajeMalla = null;
     datosUltimoImpacto = null;
     if (ventanaEditor) ventanaEditor.style.display = 'none';
     console.log("Tatuaje fijado permanentemente en el cuerpo.");
 };
+
+// ==========================================
+// 6.1 VENTANA FLOTANTE ARRASTRABLE
+// ==========================================
+(function hacerArrastrable(panel) {
+    if (!panel) return;
+    const tirador = panel.querySelector('.xp-t');
+    if (!tirador) return;
+
+    let arrastrando = false;
+    let offsetX = 0;
+    let offsetY = 0;
+
+    tirador.style.cursor = 'move';
+
+    tirador.addEventListener('pointerdown', (evento) => {
+        arrastrando = true;
+        const rect = panel.getBoundingClientRect();
+        offsetX = evento.clientX - rect.left;
+        offsetY = evento.clientY - rect.top;
+        tirador.setPointerCapture(evento.pointerId);
+    });
+
+    tirador.addEventListener('pointermove', (evento) => {
+        if (!arrastrando) return;
+        panel.style.left = (evento.clientX - offsetX) + 'px';
+        panel.style.top = (evento.clientY - offsetY) + 'px';
+        panel.style.right = 'auto'; // anulamos el "right" inicial para que mande "left"
+    });
+
+    tirador.addEventListener('pointerup', () => { arrastrando = false; });
+    tirador.addEventListener('pointercancel', () => { arrastrando = false; });
+})(ventanaEditor);
 
 // ==========================================
 // 7. GESTOR DE SUBIDA DE ARCHIVOS
@@ -353,188 +433,4 @@ window.addEventListener('resize', () => {
     camera.aspect = ancho / alto;
     camera.updateProjectionMatrix();
     renderer.setSize(ancho, alto);
-});
-
-
-/// Stencil 
-
-const fileInput = document.getElementById('fileInput');
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
-const btnLoad = document.getElementById('btnLoad');
-const btnDownload = document.getElementById('btnDownload');
-const btnPick = document.getElementById('btnPick');
-const swatch = document.getElementById('swatch');
-
-// Canvas oculto para almacenar la imagen original sin alteraciones
-const baseCanvas = document.createElement('canvas');
-const baseCtx = baseCanvas.getContext('2d');
-
-let hasImage = false;
-let eyedropperActive = false;
-
-const state = { 
-  bgOn: false, 
-  bgTolerance: 40, 
-  pickedColor: null, 
-  stencilOn: false, 
-  stencilThreshold: 120 
-};
-
-// Cargar imagen de archivo al Canvas
-function srcToCanvas(file) {
-  if (!file || !file.type.startsWith('image/')) return;
-  const img = new Image();
-  const url = URL.createObjectURL(file);
-  img.onload = () => {
-    // Redimensionar si la imagen supera los 1200px para no congelar el navegador
-    const scale = Math.min(1, 1200 / Math.max(img.naturalWidth, img.naturalHeight));
-    const w = Math.round(img.naturalWidth * scale);
-    const h = Math.round(img.naturalHeight * scale);
-    
-    baseCanvas.width = canvas.width = w; 
-    baseCanvas.height = canvas.height = h;
-    
-    baseCtx.drawImage(img, 0, 0, w, h);
-    hasImage = true; 
-    btnDownload.disabled = false; 
-    state.pickedColor = null; 
-    if(swatch) swatch.style.display = 'none';
-    
-    render(); 
-    URL.revokeObjectURL(url);
-  };
-  img.src = url;
-}
-
-btnLoad.addEventListener('click', () => fileInput.click());
-fileInput.addEventListener('change', e => srcToCanvas(e.target.files[0]));
-
-// Eventos de Checkboxes y Deslizadores
-document.getElementById('bgOn').addEventListener('change', e => { state.bgOn = e.target.checked; render(); });
-document.getElementById('stencilOn').addEventListener('change', e => { state.stencilOn = e.target.checked; render(); });
-
-function bindInput(id, key, labelId) {
-  document.getElementById(id).addEventListener('input', e => {
-    state[key] = parseInt(e.target.value);
-    document.getElementById(labelId).textContent = e.target.value;
-    render();
-  });
-}
-bindInput('bgTolerance', 'bgTolerance', 'v-bgTolerance');
-bindInput('stencilThreshold', 'stencilThreshold', 'v-stencilThreshold');
-
-// Lógica del Cuentagotas (Elegir color)
-btnPick.addEventListener('click', () => {
-  if (!hasImage) return;
-  eyedropperActive = !eyedropperActive;
-  canvas.style.cursor = eyedropperActive ? 'crosshair' : 'default';
-});
-
-canvas.addEventListener('click', e => {
-  if (!eyedropperActive || !hasImage) return;
-  const rect = canvas.getBoundingClientRect();
-  const x = Math.floor((e.clientX - rect.left) * (canvas.width / rect.width));
-  const y = Math.floor((e.clientY - rect.top) * (canvas.height / rect.height));
-  
-  // Extraer el color del píxel de la imagen original
-  const p = baseCtx.getImageData(x, y, 1, 1).data;
-  
-  state.pickedColor = { r: p[0], g: p[1], b: p[2] };
-  if(swatch) {
-    swatch.style.display = 'inline-block';
-    swatch.style.backgroundColor = `rgb(${p[0]},${p[1]},${p[2]})`;
-  }
-  eyedropperActive = false; 
-  canvas.style.cursor = 'default';
-  render();
-});
-
-// Descargar Archivo Final
-btnDownload.addEventListener('click', () => {
-  const link = document.createElement('a'); 
-  link.download = 'imagen_procesada.png';
-  link.href = canvas.toDataURL(); 
-  link.click();
-});
-
-// MOTOR DE PROCESAMIENTO DE PÍXELES (Core)
-function render() {
-  if (!hasImage) return;
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.drawImage(baseCanvas, 0, 0);
-  if (!state.bgOn && !state.stencilOn) return;
-
-  const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  const data = imgData.data;
-  const w = canvas.width;
-  const h = canvas.height;
-
-  // 1. Algoritmo Quitar Fondo (Flood Fill desde los bordes perimetrales)
-  if (state.bgOn && state.pickedColor) {
-    const target = state.pickedColor, tol = state.bgTolerance;
-    const visited = new Uint8Array(w * h), queue = [];
-    
-    for (let x = 0; x < w; x++) { queue.push(x, 0, x, h - 1); visited[x] = visited[x + (h - 1) * w] = 1; }
-    for (let y = 1; y < h - 1; y++) { queue.push(0, y, w - 1, y); visited[y * w] = visited[(w - 1) + y * w] = 1; }
-    
-    let head = 0;
-    while (head < queue.length) {
-      const cx = queue[head++], cy = queue[head++];
-      const idx = (cy * w + cx) * 4;
-      const dist = Math.sqrt(Math.pow(data[idx]-target.r,2) + Math.pow(data[idx+1]-target.g,2) + Math.pow(data[idx+2]-target.b,2));
-      
-      if (dist <= tol) {
-        data[idx + 3] = 0; // Canal Alfa a cero (Transparente)
-        const dx = [0, 0, -1, 1], dy = [-1, 1, 0, 0];
-        for (let i = 0; i < 4; i++) {
-          const nx = cx + dx[i], ny = cy + dy[i];
-          if (nx >= 0 && nx < w && ny >= 0 && ny < h && !visited[ny * w + nx]) {
-            visited[ny * w + nx] = 1; queue.push(nx, ny);
-          }
-        }
-      }
-    }
-  }
-
-  // 2. Algoritmo Traducir a Línea (Filtro espacial Sobel para detección de contornos)
-  if (state.stencilOn) {
-    const output = new Uint8ClampedArray(data.length);
-    const threshold = state.stencilThreshold;
-    const gray = new Uint8Array(w * h);
-    
-    // Pasar a escala de grises para analizar luminosidad
-    for (let i = 0; i < data.length; i += 4) {
-      gray[i/4] = 0.299*data[i] + 0.587*data[i+1] + 0.114*data[i+2];
-    }
-
-    for (let y = 1; y < h - 1; y++) {
-      for (let x = 1; x < w - 1; x++) {
-        const idx = (y * w + x) * 4;
-        if (data[idx + 3] === 0) continue; // Si ya es transparente por el fondo, saltar
-
-        const hGrad = -gray[(y-1)*w+(x-1)] + gray[(y-1)*w+(x+1)] - 2*gray[y*w+(x-1)] + 2*gray[y*w+(x+1)] - gray[(y+1)*w+(x-1)] + gray[(y+1)*w+(x+1)];
-        const vGrad = -gray[(y-1)*w+(x-1)] - 2*gray[(y-1)*w+x] - gray[(y-1)*w+(x+1)] + gray[(y+1)*w+(x-1)] + 2*gray[(y+1)*w+x] + gray[(y+1)*w+(x+1)];
-        
-        if (Math.sqrt(hGrad*hGrad + vGrad*vGrad) > threshold) {
-          output[idx] = output[idx+1] = output[idx+2] = 0; output[idx+3] = 255; // Píxel de línea (Negro)
-        } else {
-          output[idx+3] = 0; // Espacio vacío transparente
-        }
-      }
-    }
-    for (let i = 0; i < data.length; i++) data[i] = output[i];
-  }
-  ctx.putImageData(imgData, 0, 0);
-}
-/// BOTON SALIR ROJO TERMINAR
-document.addEventListener('DOMContentLoaded', () => {
-    // CORREGIDO: Ahora busca el elemento que tiene la clase 'xp-btn' y la clase 'close'
-    const btnClose = document.querySelector('.close');
-
-    if (btnClose) {
-        btnClose.addEventListener('click', () => {
-            window.location.href = 'index.html'; 
-        });
-    }
 });

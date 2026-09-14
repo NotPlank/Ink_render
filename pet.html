@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pet</title>
     <link rel="stylesheet" href="csspet.css">
+    <link rel="stylesheet" href="bocadillo-mascota.css">
 </head>
 
 <body>
@@ -44,6 +45,69 @@
 
         </div><!-- fin del estrellas -->
     </div><!-- Fin del espacio -->
+    <!-- Script bocadillos -->
+     <script>
+        // ============================================================
+        // MASCOTA: bocadillos con tips de uso
+        // Al hacer clic, va mostrando mensajes de la lista (uno cada
+        // vez, en bucle). Si esta página vive en un iframe dentro de
+        // 3d.html, además puede recibir un aviso automático desde el
+        // script del simulador (por ejemplo, "haz clic en el maniquí").
+        // ============================================================
+ 
+        const bocadillo = document.getElementById('bocadillo');
+        const textoBocadillo = document.getElementById('texto-bocadillo');
+        const mascota = document.getElementById('pet-scale');
+ 
+        // Detectamos en qué página estamos embebidos (mismo origen,
+        // así que podemos leer la ruta del padre sin problema)
+        let paginaActual = '';
+        try {
+            paginaActual = window.parent.location.pathname.toLowerCase();
+        } catch (e) {
+            paginaActual = '';
+        }
+        const enPagina3D = paginaActual.includes('3d.html');
+ 
+        // Tips específicos del simulador 3D. De momento solo se
+        // activan aquí; para añadirlos a otras páginas, se puede
+        // comprobar paginaActual de la misma forma más adelante.
+        const tips3D = [
+            'Sube un PNG en "Mis Tatuajes" y haz clic en su miniatura para seleccionarlo.',
+            'Luego haz clic sobre el maniquí, justo donde quieras colocarlo.',
+            'Usa la ventana de "Propiedades del Tatuaje" para moverlo, girarlo y ajustar su tamaño antes de fijarlo.'
+        ];
+ 
+        let indiceTip = 0;
+        let temporizadorOcultar = null;
+ 
+        function mostrarBocadillo(texto) {
+            textoBocadillo.textContent = texto;
+            bocadillo.classList.add('visible');
+ 
+            clearTimeout(temporizadorOcultar);
+            temporizadorOcultar = setTimeout(() => {
+                bocadillo.classList.remove('visible');
+            }, 5000);
+        }
+ 
+        if (mascota) {
+            mascota.addEventListener('click', () => {
+                if (!enPagina3D || tips3D.length === 0) return;
+                mostrarBocadillo(tips3D[indiceTip]);
+                indiceTip = (indiceTip + 1) % tips3D.length;
+            });
+        }
+ 
+        // Aviso automático que puede llegar desde script.js (3d.html)
+        // cuando el usuario selecciona un tatuaje de la galería.
+        window.addEventListener('message', (evento) => {
+            if (evento.origin !== window.location.origin) return;
+            if (evento.data && evento.data.tipo === 'tip3d' && evento.data.texto) {
+                mostrarBocadillo(evento.data.texto);
+            }
+        });
+    </script>
 </body>
 </body>
 
