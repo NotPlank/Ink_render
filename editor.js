@@ -444,7 +444,7 @@ function generarStencil() {
     const suavizado = parseInt(controlSuavizado.value, 10);
     const sensibilidad = parseInt(controlSensibilidad.value, 10);
     const detalle = parseInt(controlDetalle.value, 10);
-    const grosor = parseInt(controlGrosor.value, 10);
+    const grosor = parseInt(controlGrosor.value, 8);
     const invertir = controlInvertir.checked;
 
     // 2. Brillo/contraste + escala de grises
