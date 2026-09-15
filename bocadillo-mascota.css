@@ -1,10 +1,8 @@
-
-/*---------------- BOCADILLO DE LA MASCOTA --------------*/
+/*---------------- BOCADILLO DE LA MASCOTA ARRIBA --------------*/
 .bocadillo {
-    position: absolute;
-    top: 0px;
-    left: 100px;
-    transform: translate(-50%, -100%) scale(0.9);
+    position: fixed; 
+    z-index: 999999 !important; /* Por encima de todo Bootstrap */
+    
     width: 220px;
     background-color: #ece9d8;
     border: 2px solid #7f9db9;
@@ -16,38 +14,44 @@
     line-height: 1.4;
     color: #222;
     text-align: center;
-    z-index: 20;
+    overflow: visible;
+    
+    /* El translate pivota desde el centro horizontal y empuja hacia ARRIBA */
+    transform: translate(-50%, -100%) scale(0.9);
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.2s ease, transform 0.2s ease;
 }
+
 .bocadillo.visible {
     opacity: 1;
-    transform: translate(-50%, -100%) scale(1);
+    transform: translate(-50%, -100%) scale(1); /* Su tamaño real del 100% */
 }
-/* Colita del bocadillo apuntando hacia la mascota */
+
+/* --- COLITA APUNTANDO HACIA ABAJO (Hacia la mascota) --- */
 .bocadillo::after {
     content: "";
     position: absolute;
-    bottom: -9px;
-    left: 50%;
+    bottom: -9px; /* En el borde inferior */
+    left: 20%;
     transform: translateX(-50%);
     width: 0;
     height: 0;
     border-left: 9px solid transparent;
     border-right: 9px solid transparent;
-    border-top: 9px solid #7f9db9;
+    border-top: 9px solid #7f9db9; /* Borde azul hacia abajo */
 }
+
 .bocadillo::before {
     content: "";
     position: absolute;
-    bottom: -6px;
-    left: 50%;
+    bottom: -6px; /* En el borde inferior */
+    left: 20%;
     transform: translateX(-50%);
     width: 0;
     height: 0;
     border-left: 7px solid transparent;
     border-right: 7px solid transparent;
-    border-top: 7px solid #ece9d8;
+    border-top: 7px solid #ece9d8; /* Relleno crema hacia abajo */
     z-index: 1;
 }

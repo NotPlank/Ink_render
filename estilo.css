@@ -46,6 +46,45 @@ footer{
     min-height: 10px;
     padding-bottom: 5px;
 }
+/*---------------- ANIMACIONES -------------*/
+
+
+
+@keyframes entrada {
+  0% {
+    opacity: 0;
+    transform: translateY(-50px); 
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);  
+  }
+}
+
+@keyframes entrada2 {
+  0% {
+    opacity: 0;
+    transform: translateY(50px); 
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);  
+  }
+}
+
+
+
+
+.entrada {
+  
+    animation: entrada 0.8s ease-out forwards;
+}
+.entrada2 {
+  
+    animation: entrada2 0.8s ease-out forwards;
+}
+
+
 /*---------------- GENERAL -------------*/
 @font-face {
     font-family: 'Jacquard 12';
@@ -84,7 +123,7 @@ h2{
 	margin: 2vh;
 	color: rgb(0, 0, 0);
 	margin-top: 7vh;
-    transform: translateY(-2.5vh);
+    margin-bottom: 10px;
 	
 }
 h3{
@@ -119,7 +158,6 @@ html{
     padding: 4vh 4vw 6vh;
     font-family: 'Space Mono', monospace;
 }
-
 .hero-inicio {
     text-align: center;
     margin-bottom: 6vh;
@@ -127,6 +165,9 @@ html{
 .hero-inicio .tit {
     margin-top: 0;
     letter-spacing: 0.02em;
+}
+.stt{
+    padding-top: 20px;
 }
 .hero-inicio .stt {
     font-family: 'Space Mono', monospace;
@@ -284,6 +325,8 @@ html{
     25%  { opacity: 0; }
     100% { opacity: 0; }
 }
+/*---------------- FORMULARIO DE CONTACTO --------------*/
+
 
 
 /*---------------- ESTRUCTURA --------------*/
@@ -338,9 +381,17 @@ video{
 	filter: invert(1); 
 }
 
-
+.navbar .container-fluid {
+    display: flex !important;
+    align-items: center !important;
+    align-content: center !important;
+    transform: translateY(-20px);
+}
 .logo{
 	z-index: 1000;
+    height: 8rem ;
+    width: auto ;
+    transform: translateY(-20px);
 }
 .vent{
 	transform: translateY(200px);
@@ -1337,4 +1388,51 @@ canvas {
   .faq-question {
     transition: none;
   }
+}
+/*---------------- 3D: CONTROLES FLOTANTES SUELTOS --------------*/
+.controles-3d {
+    position: absolute;
+    left: 10px;
+    display: flex;
+    gap: 6px;
+    z-index: 5;
+}
+.controles-3d-arriba {
+    top: 10px;
+}
+.controles-3d-abajo {
+    bottom: 10px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+}
+.fila-controles-3d {
+    display: flex;
+    gap: 6px;
+}
+.btn-suelto {
+    background: rgba(0, 0, 0, 0.4);
+    border: none;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 1.2rem;
+    line-height: 1;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5));
+    transition: transform 0.1s ease, background 0.15s ease;
+    touch-action: manipulation;
+}
+.btn-suelto:hover {
+    background: rgba(0, 0, 0, 0.6);
+    transform: scale(1.1);
+}
+.btn-suelto:active {
+    transform: scale(0.92);
 }

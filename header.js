@@ -1,9 +1,9 @@
 document.getElementById('header-placeholder').innerHTML = `
-            <div class="container-fluid">
+            <div class="container-fluid"px-2 padding-bottom:"200px">
                 <div class="row">
                     <nav class="navbar navbar-expand-lg bg-body-light">
-                        <div class="container-fluid">
-                            <img class="logo" src="imagenes/gatitu2.jpg" width="50px" onclick="window.location.href='index.html'" style="cursor: pointer;">
+                        <div class="container-fluid" padding-bottom:"100px">
+                            <img class="logo" width="25px" src="imagenes/logo2.svg" width="50px" onclick="window.location.href='index.html'" style="cursor: pointer;">
                             <span class="navbar-text text-dark fs-4 d-block d-md-none mx-auto"><h1>Ink Render</h1></span>
                             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false"
@@ -16,7 +16,7 @@ document.getElementById('header-placeholder').innerHTML = `
                                     <li class="nav-item dropdown ms-auto">
                                         <a class="nav-link dropdown-toggle" href="#" role="button"
                                             data-bs-toggle="dropdown" aria-expanded="false">
-                                            Features
+                                            Apps
                                         </a>
                                         <ul class="dropdown-menu px-0 dropdown-menu-dark">
                                             <li><a class="dropdown-item bg-dark" href="3d.html">3D</a></li>

@@ -50,20 +50,15 @@
     75% {visibility: visible;}
  }
 /*********************** GENERAL ***************************/
-body {
-    /* background: black; */
-    /* overflow: hidden; */
-    
 
-}
-/* #pet-scale {
-    transform: scale(0.3);
-    transform-origin: center;
+ #pet-scale {
+    overflow: visible !important;
     
-} */
+} 
 
 .agujeronegro {
     position: relative;
+    overflow: visible !important;
     width: 500px;
     height: 500px;
     perspective: 350px;
@@ -236,6 +231,7 @@ body {
     left: 15px;        
     transform: scale(0.35); 
     transform-origin: top left;
+
 }
 
 

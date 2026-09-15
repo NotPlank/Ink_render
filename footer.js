@@ -24,7 +24,7 @@ document.getElementById('footer-placeholder').innerHTML = `
     display: flex;
     justify-content: center;
     align-items: center;
-	overflow: visible;
+	overflow: visible !important;
 }
 #pet-frame {
     width: 35rem;
@@ -97,3 +97,83 @@ footer::after {
 }
         </style>
        `;
+
+// =========================================================================
+// BLOQUE TU DEGRADADO ORIGINAL + LAS ESTRELLAS QUE SÍ FUNCIONABAN
+// =========================================================================
+(function() {
+    const fondoGlobalA = document.createElement('div');
+    fondoGlobalA.className = 'cielo-estrellado-fijo capa-a';
+
+    const fondoGlobalB = document.createElement('div');
+    fondoGlobalB.className = 'cielo-estrellado-fijo capa-b';
+
+    document.body.prepend(fondoGlobalB);
+    document.body.prepend(fondoGlobalA);
+
+    const estilosInyeccion = document.createElement('style');
+    estilosInyeccion.innerHTML = `
+    html, body {
+        min-height: 100vh !important;
+        height: 100% !important;
+        margin: 0;
+        padding: 0;
+        position: relative;
+    }
+
+    /* 🌟 TU DEGRADADO ORIGINAL EXACTO E INMÓVIL */
+    html {
+        background: linear-gradient(179deg, rgba(255, 255, 255, 1) 11%, rgba(0, 0, 0, 1) 83%) !important;
+        background-attachment: fixed !important;
+    }
+
+    body, main, .main-content, #wrapper, .container, .container-fluid:not(footer .container-fluid), .row, .col {
+        background-color: transparent !important;
+        background: transparent !important;
+    }
+
+    .cielo-estrellado-fijo {
+        position: fixed !important;
+        top: 0; left: 0; 
+        width: 100vw !important; 
+        height: 100vh !important;
+        pointer-events: none;
+    }
+
+    /* --- CAPA A: Las estrellas que funcionaban (z-index negativo, transparentes nativas) --- */
+    .cielo-estrellado-fijo.capa-a {
+        z-index: -2; 
+        background-image:
+            radial-gradient(circle, rgba(99, 255, 242, 0.8) 1.2px, transparent 1.2px),
+            radial-gradient(circle, rgba(64, 255, 239, 0.7) 1px, transparent 1px),
+            radial-gradient(circle, rgba(255, 255, 255, 0.6) 1px, transparent 1px);
+        background-size: 140px 140px, 95px 95px, 180px 180px;
+        background-position: 30px 40px, 70px 20px, 120px 100px;
+        animation: destelloLento 7s ease-in-out infinite; 
+    }
+
+    /* --- CAPA B: Segunda capa del sistema que funcionaba --- */
+    .cielo-estrellado-fijo.capa-b {
+        z-index: -1; 
+        background-image:
+            radial-gradient(circle, rgba(171, 106, 255, 0.8) 1.5px, transparent 1.5px),
+            radial-gradient(circle, rgba(124, 24, 255, 0.7) 1.1px, transparent 1.1px),
+            radial-gradient(circle, rgba(255, 255, 255, 0.5) 0.9px, transparent 0.9px);
+        background-size: 110px 110px, 150px 150px, 80px 80px;
+        background-position: 50px 60px, 25px 90px, 95px 35px;
+        animation: destelloRapido 4.5s ease-in-out infinite;
+        animation-delay: 1.5s;
+    }
+
+    @keyframes destelloLento {
+        0%, 100% { opacity: 0.95; }
+        50% { opacity: 0.15; }
+    }
+
+    @keyframes destelloRapido {
+        0%, 100% { opacity: 0.15; }
+        50% { opacity: 0.85; }
+    }
+    `;
+    document.head.appendChild(estilosInyeccion);
+})();
