@@ -47,9 +47,6 @@ footer{
     padding-bottom: 5px;
 }
 /*---------------- ANIMACIONES -------------*/
-
-
-
 @keyframes entrada {
   0% {
     opacity: 0;
@@ -71,10 +68,6 @@ footer{
     transform: translateY(0);  
   }
 }
-
-
-
-
 .entrada {
   
     animation: entrada 0.8s ease-out forwards;
@@ -83,8 +76,6 @@ footer{
   
     animation: entrada2 0.8s ease-out forwards;
 }
-
-
 /*---------------- GENERAL -------------*/
 @font-face {
     font-family: 'Jacquard 12';
@@ -172,7 +163,7 @@ html{
 .hero-inicio .stt {
     font-family: 'Space Mono', monospace;
     font-size: 0.95rem;
-    color: var(--accent-color);
+    color: var(--tinta);
     max-width: 480px;
     margin: 0 auto;
     line-height: 1.6;
@@ -197,6 +188,10 @@ html{
     transform: translateY(-3px);
     background-color: #dcdbf1;
     box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+}
+.tarjeta-herramienta h3:hover{
+    color:var(--tinta);
+    
 }
 .tarjeta-herramienta h3 {
     font-family: 'Ruritania-Outline';
@@ -261,13 +256,6 @@ html{
     background: #1a1a1a;
     overflow: hidden;
 }
-
-@media (min-width: 700px) {
-    .carrusel-fotos {
-        height: 25vh !important;
-    }
-}
-
 .foto-placeholder {
     position: absolute !important;
     inset: 0 !important;
@@ -300,7 +288,7 @@ html{
     display: block !important;
     width: 100% !important;
     height: 100% !important;
-    object-fit: cover !important; /* ⬅️ Mantiene el rellenado obligatorio */
+    object-fit: cover !important; 
 }
 
 .cis-01__cap {
@@ -338,8 +326,9 @@ html{
     z-index: 100;
 }
 main{
+    padding-bottom: 20px;
 	width: 100%;
-	height: 90vh;
+	height: 100vh;
 	z-index: 1;
     padding-bottom: 100vh;
     background: transparent;
@@ -437,16 +426,17 @@ video{
     border-color: #ff9b7d;
 }
 .xp-c {
-    background-color: #fff;
+    background-color: #f1f0f8;
     margin: 2px;
     padding: 12px;
-    border: 1px solid #7f9db9;
+    border: 1px solid #7f83b9;
 }
 #deg{
     background-color: rgb(190, 190, 190);
 }
 #principal{
     display: grid;
+    margin-top: 20px;
     place-items: center;
     width: 100%;
     transform: translateY(0.8rem);
@@ -467,6 +457,7 @@ canvas {
 .paneles-3d {
     display: flex;
     flex-wrap: wrap;
+    margin-top: 20px;
     gap: 1.5rem;
     justify-content: center;
     align-items: flex-start;
@@ -475,7 +466,7 @@ canvas {
 .xp-v.panel-tatuajes {
     /* width: 90%; */
     flex-shrink: 0;
-    margin-bottom: 200px;
+    margin-bottom: 2000px;
 }
 #subir-tatuaje {
     font-family: sans-serif;
@@ -568,21 +559,7 @@ canvas {
 }
 
 /*---------------- FAQ --------------*/
-/* .accordion-button:not(.collapsed) {
-    background: #f5f3f3;
-    background: linear-gradient(90deg, rgba(254, 254, 254, 1) 26%, rgba(189, 189, 189, 1) 55%, rgba(255, 255, 255, 1) 79%);
-    border: 1px solid white;
-    font-size: 1rem;
-    
-}
-.accordion-button{
-    border: 2px solid white;
-    font-size: 1rem;
-    filter: multiply;
-}
-.accordion-button:hover{
-    box-shadow: 2px 2px 20px 5px rgb(144, 130, 228); 
-} */
+
  :root {
   --card-color: #f5f5f5;
   --card-hover: #e1eff3;
@@ -727,42 +704,13 @@ canvas {
   padding: 0 24px 22px;
   color: var(--muted-text);
 }
-
-/* ---------- Mobile ---------- */
-/* @media (max-width: 600px) {
-  .faq-section {
-    padding: 50px 16px;
-  }
-
-  .faq-heading {
-    margin-bottom: 30px;
-  }
-
-  .faq-question {
-    padding: 18px;
-    font-size: 0.95rem;
-  }
-
-  .faq-answer-content p {
-    padding: 0 18px 18px;
-  }
-
-  .faq-icon {
-    width: 30px;
-    height: 30px;
-    font-size: 1.2rem;
-  }
-} */
-/* ------------------Editor de imagenes--------------- */
-
 #contenedorstencil {
     width: 100%;
     height: 500px;
-    /* background-color: #111; */
     position: relative;
     display: block;
 }
-/* ---------------Galery------------- */
+/* ---------------Galería------------- */
 .cis-01,
 .cis-01 *,
 .cis-01 *::before,
@@ -1009,17 +957,17 @@ canvas {
 
 /*---------------- Stencil --------------*/
 .zona-subida {
-    border: 2px dashed #7f9db9;
+    border: 2px dashed #8368cf;
     border-radius: 6px;
     padding: 2rem 1rem;
     text-align: center;
-    background-color: #f5f5f0;
+    background-color: #f0f2f5;
     font-family: sans-serif;
 }
 .zona-subida .texto-ayuda {
     margin-top: 0.75rem;
     font-size: 0.85rem;
-    color: #555;
+    color: #555555;
     margin-bottom: 0;
 }
 .galeria-imagenes {
@@ -1146,7 +1094,7 @@ canvas {
 
 /* ------------   Panel de ajustes   ---------- */
 .panel-ajustes {
-    background: #f7f7f9;
+    background: #e9e9f0;
     border: 1px solid #ddd;
     border-radius: 12px;
     padding: 18px;
@@ -1162,7 +1110,7 @@ canvas {
     font-size: 0.72rem;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    color: #999;
+    color: #a4a2ad;
     margin: 16px 0 8px;
     font-weight: 700;
 }
@@ -1181,7 +1129,7 @@ canvas {
 }
 .ajuste-item label span:last-child {
     font-weight: 700;
-    color: #2f6fb3;
+    color:  #3700ff;;
 }
 
 /*---------------- Sliders -------------- */
@@ -1200,7 +1148,7 @@ canvas {
     width: 22px;
     height: 22px;
     border-radius: 50%;
-    background: #2f6fb3;
+    background: #3700ff;;
     border: 3px solid #fff;
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
     cursor: pointer;
@@ -1232,7 +1180,7 @@ canvas {
 .ajuste-item.checkbox input[type="checkbox"] {
     width: 17px;
     height: 17px;
-    accent-color: #2f6fb3;
+    accent-color:  #3700ff;
     cursor: pointer;
 }
 
@@ -1252,7 +1200,7 @@ canvas {
     font-weight: 600;
     cursor: pointer;
     color: #fff;
-    background: linear-gradient(135deg, #4a90d9, #2f6fb3);
+    background: linear-gradient(135deg, #73b8d891, #792bdfb0);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
     transition: transform 0.08s ease, box-shadow 0.08s ease;
 }
@@ -1264,10 +1212,10 @@ canvas {
     transform: translateY(0);
 }
 .btn-edt.secundario {
-    background: linear-gradient(135deg, #9aa0a8, #6b7075);
+    background: linear-gradient(135deg, #9c9aa8, #3f428b);
 }
 .btn-edt.reset {
-    background: linear-gradient(135deg, #e0764a, #b8492a);
+    background: linear-gradient(135deg, #6538b991, #1c1485b0);
 }
 
 @media screen and (max-width: 991.98px) {
@@ -1279,117 +1227,7 @@ canvas {
 canvas {
     display: block;
 }
-/*---------------- Fondo Index --------------*/
-
-/*---------------- QUERYS --------------*/
-@media screen and (min-width: 768px) and (max-width: 991.98px) {
-	.vid{
-		transform: translateY(-15vw);
-	}
-	.tit{
-		transform: translateY(10vh);
-		
-	}
-	.sim , .sten{
-		transform: translateY(10vh);
-		width: 20vw;
-		
-	}
-	p{
-		transform: translateY(10vh);
-	}
-	.vent{
-		display: none;
-	}
-    #contenedor3d {
-        height: 400px;     
-    }
-    .panel-tatuajes {
-        width: 95%;
-    }
-    
-}
-@media screen and (min-width: 475px) and (max-width: 768px){
-	.tit{
-		display: none;
-	}
-    .stt{
-        text-align: left;
-    }
-	.sim , .sten{
-		width: 40vmin;
-		
-	}
-	.vid{
-		transform: scale(1.5) translateY(5vh);
-	}
-	.menu{
-		font-size: 0.9rem;
-	}
-    #inf{
-        margin-top: 40px;
-    }
-	.logo{
-		font-size: 1.5rem;
-	}
-	.pet-container{
-		transform: scale(0.6);
-	}
-    .xp-v {
-        width: 95%;             
-    }
-    #contenedor3d {
-        height: 350px;   
-    }
-    .panel-tatuajes {
-        width: 100%;
-    }
-    .cis-01 {
-        width: 95vw;
-        margin: 20px;
-        padding: 20px;
-    }
-
-}
-/* ---------- Reduced Motion Accessibility ---------- */
-/* @media (prefers-reduced-motion: reduce) {
-  .faq-answer,
-  .faq-icon,
-  .faq-question {
-    transition: none;
-  }
-} */
-/* ---------- Mobile ---------- */
-@media (max-width: 600px) {
-  .faq-section {
-    padding: 50px 16px;
-  }
-
-  .faq-heading {
-    margin-bottom: 30px;
-  }
-
-  .faq-question {
-    padding: 18px;
-    font-size: 0.95rem;
-  }
-
-  .faq-answer-content p {
-    padding: 0 18px 18px;
-  }
-
-  .faq-icon {
-    width: 30px;
-    height: 30px;
-    font-size: 1.2rem;
-  }
-  .faq-answer,
-  .faq-icon,
-  .faq-question {
-    transition: none;
-  }
-}
-/*---------------- 3D: CONTROLES FLOTANTES SUELTOS --------------*/
+/*---------------- 3D --------------*/
 .controles-3d {
     position: absolute;
     left: 10px;
@@ -1435,4 +1273,108 @@ canvas {
 }
 .btn-suelto:active {
     transform: scale(0.92);
+}
+/*---------------- QUERYS --------------*/
+@media screen and (min-width: 768px) and (max-width: 991.98px) {
+	.vid{
+		transform: translateY(-15vw);
+	}
+	.sim , .sten{
+		transform: translateY(10vh);
+		width: 20vw;
+		
+	}
+	.vent{
+		display: none;
+	}
+    #contenedor3d {
+        height: 400px;     
+    }
+    .panel-tatuajes {
+        width: 95%;
+    }
+    .carrusel-fotos {
+        height: 25vh !important;
+    }
+    
+}
+@media screen and (min-width: 475px) and (max-width: 768px){
+	.tit{
+		display: none;
+	}
+    .stt{
+        text-align: left;
+    }
+	.sim , .sten{
+		width: 40vmin;
+		
+	}
+	.vid{
+		transform: scale(1.5) translateY(5vh);
+	}
+	.menu{
+		font-size: 0.9rem;
+	}
+    #inf{
+        margin-top: 40px;
+    }
+	.logo{
+		font-size: 1.5rem;
+	}
+	.pet-container{
+		transform: scale(0.6);
+	}
+    .xp-v {
+        width: 95%;             
+    }
+    #contenedor3d {
+        height: 350px;   
+    }
+    .panel-tatuajes {
+        width: 100%;
+    }
+    .cis-01 {
+        width: 95vw;
+        margin: 20px;
+        padding: 20px;
+    }
+    .carrusel-fotos {
+        height: 25vh !important;
+    }
+
+}
+/* ---------- Mobile ---------- */
+@media (max-width: 600px) {
+  .faq-section {
+    padding: 50px 16px;
+  }
+
+  .faq-heading {
+    margin-bottom: 30px;
+  }
+
+  .faq-question {
+    padding: 18px;
+    font-size: 0.95rem;
+  }
+
+  .faq-answer-content p {
+    padding: 0 18px 18px;
+  }
+
+  .faq-icon {
+    width: 30px;
+    height: 30px;
+    font-size: 1.2rem;
+  }
+  .faq-answer,
+  .faq-icon,
+  .faq-question {
+    transition: none;
+  }
+  .faq-answer,
+  .faq-icon,
+  .faq-question {
+    transition: none;
+  }
 }

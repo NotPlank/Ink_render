@@ -1,11 +1,6 @@
-// ============================================================
-// EDITOR DE IMÁGENES - STENCIL MAKER
-// Sube fotos/dibujos, ajusta filtros con previsualización en
-// vivo, y genera un PNG con líneas de contorno (negras/grises)
-// y fondo transparente, listo para usar como stencil de tatuaje
-// ============================================================
 
-// --- Referencias del DOM ---
+// -----------STENCIL----------- // 
+
 const inputImagenes = document.getElementById('input-imagenes');
 const galeriaImagenes = document.getElementById('galeria-imagenes');
 const modoEdicion = document.getElementById('modo-edicion');
@@ -33,8 +28,6 @@ const btnVolver = document.getElementById('btn-volver');
 const btnReset = document.getElementById('btn-reset');
 const btnFondo = document.getElementById('btn-fondo');
 const btnZoomReset = document.getElementById('btn-zoom-reset');
-
-// Valores por defecto, usados también por el botón "Restablecer"
 const VALORES_POR_DEFECTO = {
     brillo: 0,
     contraste: 0,
@@ -45,24 +38,15 @@ const VALORES_POR_DEFECTO = {
     grosor: 0,
     invertir: false
 };
-
-// Canvas oculto auxiliar donde reconstruimos la imagen original
-// cada vez que cambia un ajuste (nunca se pinta en pantalla)
 const canvasOriginal = document.createElement('canvas');
 const ctxOriginal = canvasOriginal.getContext('2d', { willReadFrequently: true });
-
-// Tamaño máximo de trabajo (resolución del procesado, no del CSS)
 const TAMANIO_MAXIMO = 650;
-
-// --- Estado ---
-let galeria = [];       // { id, nombre, imgElement }
+let galeria = [];     
 let imagenActualId = null;
 let actualizacionPendiente = false;
 let nivelZoom = 1;
 
-// ============================================================
-// 1. SUBIDA DE ARCHIVOS Y GALERÍA
-// ============================================================
+//  SUBIDA DE ARCHIVOS Y GALERÍA
 
 inputImagenes.addEventListener('change', (evento) => {
     const archivos = Array.from(evento.target.files);
@@ -104,9 +88,7 @@ function renderizarGaleria() {
     });
 }
 
-// ============================================================
-// 2. ENTRAR / SALIR DEL MODO EDICIÓN
-// ============================================================
+//  ENTRAR / SALIR DEL MODO EDICIÓN
 
 function seleccionarImagen(id) {
     const item = galeria.find((i) => i.id === id);
@@ -149,9 +131,7 @@ btnVolver.addEventListener('click', () => {
     imagenActualId = null;
 });
 
-// ============================================================
-// 3. CONTROLES: recalcular en vivo al mover cualquier slider
-// ============================================================
+//  CONTROLES
 
 todosLosControles.forEach((control) => {
     control.addEventListener('input', () => {
@@ -170,9 +150,6 @@ function actualizarEtiquetas() {
     document.getElementById('valor-detalle').textContent = controlDetalle.value;
     document.getElementById('valor-grosor').textContent = controlGrosor.value;
 }
-
-// Evita recalcular decenas de veces por segundo mientras se
-// arrastra un slider rápido: agrupa las peticiones en cada frame
 function solicitarActualizacion() {
     if (actualizacionPendiente) return;
     actualizacionPendiente = true;
@@ -182,7 +159,6 @@ function solicitarActualizacion() {
     });
 }
 
-// Botón "Restablecer ajustes"
 btnReset.addEventListener('click', () => {
     restablecerAjustes(true);
 });
@@ -200,9 +176,7 @@ function restablecerAjustes(regenerar) {
     if (regenerar) generarStencil();
 }
 
-// ============================================================
-// 4. VISOR: fondo blanco/transparencia y zoom con rueda
-// ============================================================
+//  VISOR
 
 btnFondo.addEventListener('click', () => {
     canvasWrapper.classList.toggle('ver-transparencia');
@@ -224,15 +198,12 @@ function restablecerZoom() {
     canvasPreview.style.transform = 'scale(1)';
 }
 
-// ============================================================
-// 5. PROCESAMIENTO DE IMAGEN (el "motor" del stencil)
-// ============================================================
+//  IMAGEN
 
 function clamp(valor) {
     return valor < 0 ? 0 : valor > 255 ? 255 : valor;
 }
 
-// Ajuste de brillo y contraste sobre los canales RGB
 function aplicarBrilloContraste(data, brillo, contraste) {
     const factor = (259 * (contraste + 255)) / (255 * (259 - contraste));
     for (let i = 0; i < data.length; i += 4) {
@@ -242,7 +213,6 @@ function aplicarBrilloContraste(data, brillo, contraste) {
     }
 }
 
-// Escala de grises (luminosidad perceptual)
 function aGrises(data) {
     for (let i = 0; i < data.length; i += 4) {
         const gris = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
@@ -250,9 +220,6 @@ function aGrises(data) {
     }
 }
 
-// Desenfoque simple (caja 3x3) repetido N veces sobre un array
-// de píxeles (RGBA) - se usa tanto para reducir ruido como,
-// aparte, como base para la nitidez (unsharp mask)
 function desenfocarCanal(data, ancho, alto, iteraciones) {
     for (let it = 0; it < iteraciones; it++) {
         const copia = new Uint8ClampedArray(data);
@@ -273,9 +240,6 @@ function desenfocarCanal(data, ancho, alto, iteraciones) {
     }
 }
 
-// Nitidez (unsharp mask): compara la imagen con una versión
-// desenfocada de sí misma y exagera la diferencia → bordes más
-// marcados y definidos, líneas de contorno más finas y limpias
 function aplicarNitidez(data, ancho, alto, cantidad) {
     if (cantidad <= 0) return;
     const suave = new Uint8ClampedArray(data);
@@ -287,9 +251,7 @@ function aplicarNitidez(data, ancho, alto, cantidad) {
     }
 }
 
-// Detección de bordes con el operador Sobel: devuelve la
-// magnitud del gradiente en cada píxel Y también su dirección
-// (gx, gy), necesaria luego para adelgazar la línea al mínimo.
+
 function sobel(data, ancho, alto) {
     const magnitudes = new Float32Array(ancho * alto);
     const direccionX = new Float32Array(ancho * alto);
@@ -320,11 +282,6 @@ function sobel(data, ancho, alto) {
     return { magnitudes, direccionX, direccionY };
 }
 
-// ADELGAZADO (non-maximum suppression): para cada píxel de
-// borde, mira sus dos vecinos en la dirección perpendicular a
-// la línea. Si no es el más fuerte de los tres, se descarta.
-// Esto reduce cualquier borde "grueso" a un trazo de 1 píxel,
-// que es la base para conseguir líneas finas y precisas.
 function adelgazarLineas(magnitudes, direccionX, direccionY, ancho, alto) {
     const salida = new Float32Array(magnitudes.length);
 
@@ -358,13 +315,6 @@ function adelgazarLineas(magnitudes, direccionX, direccionY, ancho, alto) {
     return salida;
 }
 
-// DOBLE UMBRAL (estilo Canny): las líneas "importantes" son las
-// que superan el umbral alto (sensibilidad) → van bien marcadas,
-// opacas. Las líneas débiles solo se conservan (como guía tenue)
-// si tocan directamente a una línea importante; si están
-// sueltas, se consideran ruido y se descartan por completo. Esto
-// es justo lo que da el efecto de "líneas mínimas, solo las que
-// importan" en vez de rellenar la imagen de trazos sueltos.
 function construirAlfaConDobleUmbral(magnitudesFinas, ancho, alto, sensibilidad, extraDetalle) {
     const umbralAlto = sensibilidad;
     const umbralBajo = Math.max(0, sensibilidad - extraDetalle);
@@ -376,9 +326,8 @@ function construirAlfaConDobleUmbral(magnitudesFinas, ancho, alto, sensibilidad,
             const mag = magnitudesFinas[idx];
 
             if (mag >= umbralAlto) {
-                alfa[idx] = 255; // línea principal, bien marcada
+                alfa[idx] = 255; 
             } else if (mag >= umbralBajo) {
-                // línea débil: solo se conserva (tenue) si toca una línea fuerte
                 let conectada = false;
                 for (let dy = -1; dy <= 1 && !conectada; dy++) {
                     for (let dx = -1; dx <= 1 && !conectada; dx++) {
@@ -391,18 +340,13 @@ function construirAlfaConDobleUmbral(magnitudesFinas, ancho, alto, sensibilidad,
                 }
                 alfa[idx] = conectada ? 150 : 0;
             } else {
-                alfa[idx] = 0; // ruido, se descarta
+                alfa[idx] = 0; 
             }
         }
     }
     return alfa;
 }
 
-// Engrosar las líneas de forma gradual: filtro de máximo local
-// en 4 direcciones (no en diagonal), y trabajando sobre el canal
-// alfa continuo en vez de una máscara binaria. Esto hace que
-// cada paso de "grosor" sea un incremento fino y controlable,
-// en vez de duplicar el grosor de golpe.
 function engrosarAlfa(alfa, ancho, alto, iteraciones) {
     let actual = alfa;
     for (let it = 0; it < iteraciones; it++) {
@@ -423,8 +367,6 @@ function engrosarAlfa(alfa, ancho, alto, iteraciones) {
     return actual;
 }
 
-// Pipeline completo: de la imagen original a un PNG de líneas
-// con fondo transparente, según los ajustes actuales del panel
 function generarStencil() {
     const item = galeria.find((i) => i.id === imagenActualId);
     if (!item) return;
@@ -432,7 +374,6 @@ function generarStencil() {
     const ancho = canvasPreview.width;
     const alto = canvasPreview.height;
 
-    // 1. Redibujamos siempre desde la imagen original (nunca acumulamos filtros)
     ctxOriginal.clearRect(0, 0, ancho, alto);
     ctxOriginal.drawImage(item.imgElement, 0, 0, ancho, alto);
     const imageData = ctxOriginal.getImageData(0, 0, ancho, alto);
@@ -446,31 +387,28 @@ function generarStencil() {
     const detalle = parseInt(controlDetalle.value, 10);
     const grosor = parseInt(controlGrosor.value, 8);
     const invertir = controlInvertir.checked;
-
-    // 2. Brillo/contraste + escala de grises
     aplicarBrilloContraste(data, brillo, contraste);
     aGrises(data);
 
-    // 3. Reducir ruido ANTES de afilar (si no, se afila también el ruido)
+    //  Reducir ruido 
     if (suavizado > 0) desenfocarCanal(data, ancho, alto, suavizado);
 
-    // 4. Nitidez: define y afina el trazo antes de buscar bordes
+    //  Nitidez
     aplicarNitidez(data, ancho, alto, nitidez);
 
-    // 5. Detección de bordes (magnitud + dirección)
+    //  Detección de bordes
     const { magnitudes, direccionX, direccionY } = sobel(data, ancho, alto);
 
-    // 6. Adelgazado: reduce cada borde a su trazo mínimo (1 píxel)
+    //  Adelgazado
     const magnitudesFinas = adelgazarLineas(magnitudes, direccionX, direccionY, ancho, alto);
 
-    // 7. Doble umbral: línea importante (opaca) vs. línea débil conectada
-    // (tenue, solo si toca a una importante) vs. ruido (se descarta)
+    //  Doble umbral
     let alfa = construirAlfaConDobleUmbral(magnitudesFinas, ancho, alto, sensibilidad, detalle);
 
-    // 8. Grosor de línea, gradual (a partir de la línea ya adelgazada)
+    // Grosor de línea
     if (grosor > 0) alfa = engrosarAlfa(alfa, ancho, alto, grosor);
 
-    // 9. Construimos el PNG final: RGB del color de línea, alfa = intensidad de borde
+    //   PNG 
     const salida = ctxPreview.createImageData(ancho, alto);
     const colorLinea = invertir ? 255 : 0;
     for (let i = 0; i < alfa.length; i++) {
@@ -484,9 +422,7 @@ function generarStencil() {
     ctxPreview.putImageData(salida, 0, 0);
 }
 
-// ============================================================
-// 6. GUARDAR RESULTADO COMO PNG
-// ============================================================
+//  GUARDAR 
 
 btnGuardar.addEventListener('click', () => {
     const item = galeria.find((i) => i.id === imagenActualId);

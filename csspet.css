@@ -35,20 +35,6 @@
     40% {transform:rotate(2deg);}
     75% {transform:rotate(0deg);}
 }
-/* @keyframes sonreir {
-    0% {transform: skewy(-50deg);rotate: (-172deg);}
-    25% {transform: skewy(-60deg);rotate: (-172deg);}
-    50% {transform: skewy(-55deg);rotate: (-172deg);}
-    100% {transform: skewy(-50deg);rotate: (-172deg);}
-} */
- @keyframes blush {
-    0% {filter: opacity(100%);}
-    5% {filter: opacity(90%);}
-    15% {filter: opacity(50%);}
-    15% {filter: opacity(10%);}
-    40% {visibility: hidden;}
-    75% {visibility: visible;}
- }
 /*********************** GENERAL ***************************/
 
  #pet-scale {
@@ -71,7 +57,7 @@
     width: 280px;
     height: 280px;
     border-radius: 50%;
-    background: radial-gradient(circle, transparent 32%, #3f007a 39%, #63fff2 49%, #40ffef 51%, #7c18ffe0 58%, #7023ffab 61%, #ab6aff42 70%, transparent 95%);
+    background: radial-gradient(circle, transparent 32%, #3f007a 39%, #63fff2 49%, #40ffef 51%, #7c18fff3 58%, #6a1affcb 61%, #ab6aff42 70%, transparent 95%);
     filter: blur(5px);
     z-index: 1;
     left: 73px;
@@ -115,42 +101,14 @@
     width: 440px;
     height: 320px;
     border-radius: 50%;
-    background: radial-gradient(circle, transparent 35%, #65fff2e3 39%, #6f00ffd7 55%, #8476ffc7 64%, #8671ff7e 72%, transparent 92%);
+    background: radial-gradient(circle, transparent 35%, #65fff2e3 39%, #6f00ffea 55%, #6827ffd8 64%, #5e42ffb2 72%, transparent 92%);
     z-index: 5;
     filter: blur(5px);
     top: 50px;
     transform: rotateX(72deg);
     mask-image: linear-gradient(to bottom, transparent 29%, rgba(0, 0, 0, 1) 75%);
     animation: horizontal 2.5s ease-in-out 0s infinite alternate forwards;
-    /* animation: sonreir 5s ease-in-out 0s infinite alternate backwards; */
 }
-/* .estrellas{
-    width: 20px;
-    height: 20px;
-    background-color: white;
-    position: relative;
-    transform: rotate(55deg)skewX(30deg);
-    
-
-} */
-/* .estrellas{
-    width: 10px;
-    height: 10px;
-    position: absolute;
-    z-index: 6;
-    background-color: white;
-    content: "✦";
-} */
- .blush{
-    width: 2px;
-    height: 10px;
-    border-radius: 15px;
-    background-color: pink;
-    box-shadow: 1px 0px 10px 4px rgba(255, 192, 203, 0.61);
-    position: absolute;
-    visibility: hidden;
-    animation: blush 5s linear 15s infinite alternate none;
- }
  .der{
     top: 105px;
     left: 50px;
@@ -181,49 +139,7 @@
     left: 40px;
     rotate: 40deg; 
 }
-/* .bocadillo{
-    width: 250px;
-    height: 150px;
-    background-color: white;
-    font-size: 25px;
-    padding: 15px;
-    position: absolute;
-    display: inline-block;
-    font-family: 'Courier New', Courier, monospace; /* Fuente monoespaciada para el look retro */
-    /* font-weight: bold;
-    background-color: #ffffff; */
-    /* color: #000000; */
-    /* box-shadow:  */
-        /* 0 -4px 0 0 rgb(0, 217, 255), 
-        0  4px 0 0 rgb(0, 217, 255), 
-        -4px 0 0 0 rgb(0, 217, 255), 
-        4px 0 0 0 rgb(0, 217, 255),
-        5px -7px 0 0 rgb(255, 0, 0), 
-        8px  -2px 0 0 rgb(255, 0, 0);
-    
-   
-} */ 
-/* .bocadillo::after{
-   content: "";
-   position: absolute;
-   bottom: -16px; 
-   left: 30px;   
-   width: 4px;
-   height: 4px;
-   
-    /* box-shadow:-31px -8px 0 rgb(0, 217, 255); */
-   /* box-shadow:-31px -8px 0 rgb(0, 217, 255),-35px -5px 0 rgb(0, 217, 255),-33px -8px 0 rgb(0, 217, 255),-34px -12px 0 rgb(0, 217, 255),-36px -5px 0 rgb(0, 217, 255), -30px -12px 0px rgb(0, 217, 255),-40px -3px 0px rgb(0, 217, 255), -44px -1px 0 rgb(0, 217, 255), -44px -1px 0 rgb(0, 217, 255), -48px 2px 0 rgb(0, 217, 255), -37px -8px 0 rgb(0, 217, 255),-39px -5px 0 rgb(0, 217, 255); */
-/* } */ 
-/* .bocadillo::after{
-    content: "";
-    position: absolute;
-    bottom: -19px;
-    left: 0px;
-    height: 0;
-    border-left: 15px solid transparent;
-    border-right: 15px solid transparent;
-    border-top: 15px solid rgb(0, 217, 255);        
-} */
+
 /***********************ESTRUCTURA ***************************/
 .spacio{
     position: absolute;

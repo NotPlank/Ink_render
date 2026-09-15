@@ -3,7 +3,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 import { DecalGeometry } from 'three/addons/geometries/DecalGeometry.js';
 // ==========================================
-// 1. CONFIGURACIÓN DE PANTALLA Y ENTORNO
+//  CONFIGURACIÓN DE PANTALLA Y ENTORNO
 // ==========================================
 const contenedor = document.getElementById('contenedor3d');
 let ancho = contenedor.clientWidth;
@@ -34,7 +34,7 @@ controls.target.set(0, 1, 0);
 
 
 // ==========================================
-// 2. ILUMINACIÓN Y ESCENARIO
+//  ILUMINACIÓN Y ESCENARIO
 // ==========================================
 const luzAmbiental = new THREE.AmbientLight(0xffffff, 0.4);
 scene.add(luzAmbiental);
@@ -58,7 +58,7 @@ suelo.receiveShadow = true;
 scene.add(suelo);
 
 // ==========================================
-// 3. CARGA DEL MODELO 3D
+//  CARGA DEL MODELO 3D
 // ==========================================
 const modeloGrupo = new THREE.Group();
 scene.add(modeloGrupo);
@@ -66,10 +66,6 @@ const objLoader = new OBJLoader();
 
 let rutaModeloActual = 'modelos/Male.OBJ';
 
-// Quita todo lo que haya dentro de modeloGrupo (el cuerpo Y los
-// tatuajes ya colocados) y libera su memoria. Se usa al cambiar de
-// modelo, porque los tatuajes estaban ajustados a la superficie del
-// modelo anterior y no tendría sentido conservarlos sobre el nuevo.
 function limpiarModeloGrupo() {
     while (modeloGrupo.children.length > 0) {
         const hijo = modeloGrupo.children[0];
@@ -97,21 +93,21 @@ function cargarModeloActual() {
             objeto.position.set(0, 1, 0);
             modeloGrupo.add(objeto);
         },
-        (progreso) => {
-            if (progreso.total) {
-                console.log('Cargando modelo: ' + (progreso.loaded / progreso.total * 100).toFixed(0) + '%');
-            }
-        },
-        (error) => {
-            console.error('Error al cargar el modelo OBJ ❌', error);
-        }
+        // (progreso) => {
+        //     if (progreso.total) {
+        //         console.log('Cargando modelo: ' + (progreso.loaded / progreso.total * 100).toFixed(0) + '%');
+        //     }
+        // },
+        // (error) => {
+        //     console.error('Error al cargar el modelo OBJ ❌', error);
+        // }
     );
 }
 
-cargarModeloActual(); // carga inicial
+cargarModeloActual(); 
 
 // ==========================================
-// 4. VARIABLES Y LÓGICA DEL TATUAJE
+//  VARIABLES Y LÓGICA DEL TATUAJE
 // ==========================================
 let texturaTatuajeActiva = null;
 const textureLoader = new THREE.TextureLoader();
@@ -127,9 +123,6 @@ let ultimoTatuajeMalla = null;
 let datosUltimoImpacto = null;
 const ventanaEditor = document.getElementById('ventana-editor-tatuaje');
 
-// Material reutilizado para el decal: antes se creaba uno nuevo en
-// CADA ajuste (mover/girar/escalar), lo cual era parte del motivo de
-// la lentitud. Ahora solo se crea una vez y se le cambia la textura.
 const materialDecal = new THREE.MeshStandardMaterial({
     transparent: true,
     depthTest: true,
@@ -145,13 +138,7 @@ window.aplicarTatuaje = function (urlImagen) {
 
         texturaTatuajeActiva = textura;
         console.log("Tatuaje listo. Haz clic en el modelo.");
-
-        // Pista visual: el cursor cambia mientras está "armado" un
-        // tatuaje, para que quede claro que el siguiente clic sobre
-        // el maniquí es el que lo coloca.
         contenedor.style.cursor = 'crosshair';
-
-        // Aviso automático de la mascota (si existe en esta página)
         avisarMascota('Ahora haz clic sobre el maniquí para colocar el tatuaje ahí 👆');
     },
         undefined,
@@ -160,9 +147,7 @@ window.aplicarTatuaje = function (urlImagen) {
         });
 }
 
-// Envía un mensaje a la mascota del footer (pet.html, dentro de un
-// iframe) para que muestre un bocadillo con el texto indicado.
-// Si la mascota no está en esta página, simplemente no hace nada.
+
 function avisarMascota(texto) {
     const iframePet = document.getElementById('pet-frame');
     if (iframePet && iframePet.contentWindow) {
@@ -183,7 +168,6 @@ function actualizarTatuajeEnTiempoReal() {
         if (ultimoTatuajeMalla.geometry) ultimoTatuajeMalla.geometry.dispose();
     }
 
-    // Calcular posición desplazada localmente usando vectores directos de la superficie
     const posicionFinal = datosUltimoImpacto.posicion.clone();
 
     const vectorDerecha = new THREE.Vector3(1, 0, 0).applyEuler(datosUltimoImpacto.orientacionBase);
@@ -192,7 +176,6 @@ function actualizarTatuajeEnTiempoReal() {
     posicionFinal.addScaledVector(vectorDerecha, desplazamientoX);
     posicionFinal.addScaledVector(vectorArriba, desplazamientoY);
 
-    // Calcular la rotación sobre el eje local
     const nuevaOrientacion = datosUltimoImpacto.orientacionBase.clone();
     const radianesExtra = (rotacionTatuaje * Math.PI) / 180;
     nuevaOrientacion.z += radianesExtra;
@@ -206,18 +189,13 @@ function actualizarTatuajeEnTiempoReal() {
         tamañoFinal
     );
 
-    // CLAVE DEL ARREGLO: el decal se calcula en coordenadas del
-    // mundo, pero lo vamos a colgar de modeloGrupo. Convertimos su
-    // geometría al espacio LOCAL de modeloGrupo (aplicando su matriz
-    // inversa) para que, a partir de ahora, se mueva/gire/escale
-    // exactamente igual que el resto del cuerpo.
     geometriaDecal.applyMatrix4(modeloGrupo.matrixWorld.clone().invert());
 
     materialDecal.map = texturaUsar;
     materialDecal.needsUpdate = true;
 
     ultimoTatuajeMalla = new THREE.Mesh(geometriaDecal, materialDecal);
-    modeloGrupo.add(ultimoTatuajeMalla); // antes: scene.add(...)
+    modeloGrupo.add(ultimoTatuajeMalla);
 }
 
 contenedor.addEventListener('click', (evento) => {
@@ -230,7 +208,6 @@ contenedor.addEventListener('click', (evento) => {
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObjects(scene.children, true);
 
-    // Evitar interactuar si se hace clic en el suelo
     const impactosValidos = intersects.filter(i => i.object !== suelo);
 
     if (impactosValidos.length > 0) {
@@ -245,9 +222,7 @@ contenedor.addEventListener('click', (evento) => {
         const matrizGiro = new THREE.Matrix4();
         matrizGiro.lookAt(posicion, objetivoCámara, THREE.Object3D.DEFAULT_UP);
         orientacionBase.setFromRotationMatrix(matrizGiro);
-
-        // Resetear parámetros de transformación locales
-        escalaTatuaje = 0.2;
+        escalaTatuaje = 0.5;
         rotacionTatuaje = 0;
         desplazamientoX = 0;
         desplazamientoY = 0;
@@ -261,7 +236,6 @@ contenedor.addEventListener('click', (evento) => {
 
         actualizarTatuajeEnTiempoReal();
 
-        // Bloquear el puntero general y desplegar la ventana de edición XP
         texturaTatuajeActiva = null;
         contenedor.style.cursor = 'default';
         if (ventanaEditor) ventanaEditor.style.display = 'block';
@@ -269,10 +243,10 @@ contenedor.addEventListener('click', (evento) => {
 });
 
 // ==========================================
-// 5. INTERFAZ: CONTROLES DEL MODELO HUMANO
+// CONTROLES DEL MODELO 
 // ==========================================
 const pasoMover = 0.1;
-const pasoRotar = 0.15;
+const pasoRotar = 0.05;
 const pasoEscala = 0.1;
 
 window.moverModelo = function (direccion) {
@@ -302,15 +276,11 @@ window.resetCamara = function () {
     controls.update();
 };
 
-// Los dos modelos disponibles, y el icono que representa a cada uno
-// en el botón único de alternar (sin usar texto de "Hombre"/"Mujer").
+
 const RUTAS_MODELOS = ['modelos/Male.OBJ', 'modelos/Woman.OBJ'];
 const ICONOS_MODELOS = ['♂', '♀'];
 let indiceModeloActual = 0;
 
-// Cambia el modelo cargado. Al cambiar, se limpia el modelo anterior
-// y CUALQUIER tatuaje ya colocado sobre él (estaban ajustados a esa
-// superficie concreta, no tiene sentido conservarlos).
 function cambiarModelo(ruta) {
     if (ruta === rutaModeloActual) return;
     rutaModeloActual = ruta;
@@ -326,24 +296,20 @@ function cambiarModelo(ruta) {
     avisarMascota('Has cambiado de modelo 🔄');
 }
 
-// Botón único: cada clic pasa al siguiente modelo de la lista y
-// actualiza su propio icono (♂ ↔ ♀, o los que se añadan después).
 window.alternarModelo = function (boton) {
     indiceModeloActual = (indiceModeloActual + 1) % RUTAS_MODELOS.length;
     cambiarModelo(RUTAS_MODELOS[indiceModeloActual]);
     if (boton) boton.textContent = ICONOS_MODELOS[indiceModeloActual];
 };
 
-// Captura tal cual se ve el canvas en este momento y la guarda como
-// una foto descargable en el panel "Mis Fotos".
 window.capturarFoto = function () {
-    renderer.render(scene, camera); // aseguramos que el frame actual está pintado
+    renderer.render(scene, camera);
     renderer.domElement.toBlob((blob) => {
         if (!blob) return;
         const url = URL.createObjectURL(blob);
         guardarFotoEnGaleria(url);
         avisarMascota('¡Foto guardada! Descárgala desde "Mis Fotos" 📸');
-    }, 'image/png');
+    });
 };
 
 function guardarFotoEnGaleria(url) {
@@ -375,8 +341,6 @@ function guardarFotoEnGaleria(url) {
     listaFotos.appendChild(miniatura);
 }
 
-// Agrupa varias llamadas seguidas (p.ej. clics rápidos en ➕/➖) en
-// una sola reconstrucción por frame, en vez de una por clic.
 let actualizacionTatuajePendiente = false;
 function solicitarActualizacionTatuaje() {
     if (actualizacionTatuajePendiente) return;
@@ -388,7 +352,7 @@ function solicitarActualizacionTatuaje() {
 }
 
 // ==========================================
-// 6. INTERFAZ: CONTROLES FLOTANTES DEL TATUAJE
+//  CONTROLES
 // ==========================================
 window.ajustarEscalaTatuaje = function (factor) {
     escalaTatuaje = Math.max(0.05, escalaTatuaje + factor);
@@ -412,9 +376,6 @@ window.moverTatuaje = function (direccion) {
 };
 
 window.fijarTatuajeActual = function () {
-    // Romper las referencias temporales. El tatuaje se queda donde
-    // está, colgado de modeloGrupo, así que seguirá moviéndose con
-    // el modelo aunque dejemos de editarlo.
     ultimoTatuajeMalla = null;
     datosUltimoImpacto = null;
     if (ventanaEditor) ventanaEditor.style.display = 'none';
@@ -422,7 +383,7 @@ window.fijarTatuajeActual = function () {
 };
 
 // ==========================================
-// 6.1 VENTANA FLOTANTE ARRASTRABLE
+//  VENTANA FLOTANTE
 // ==========================================
 (function hacerArrastrable(panel) {
     if (!panel) return;
@@ -447,7 +408,7 @@ window.fijarTatuajeActual = function () {
         if (!arrastrando) return;
         panel.style.left = (evento.clientX - offsetX) + 'px';
         panel.style.top = (evento.clientY - offsetY) + 'px';
-        panel.style.right = 'auto'; // anulamos el "right" inicial para que mande "left"
+        panel.style.right = 'auto'; 
     });
 
     tirador.addEventListener('pointerup', () => { arrastrando = false; });
@@ -455,7 +416,7 @@ window.fijarTatuajeActual = function () {
 })(ventanaEditor);
 
 // ==========================================
-// 7. GESTOR DE SUBIDA DE ARCHIVOS
+//  GESTOR DE SUBIDA DE ARCHIVOS
 // ==========================================
 const inputTatuajes = document.getElementById('subir-tatuaje');
 const listaTatuajes = document.getElementById('lista-tatuajes');
@@ -511,7 +472,7 @@ inputTatuajes.addEventListener('change', (evento) => {
 });
 
 // ==========================================
-// 8. BUCLE DE RENDERIZADO Y RESIZE
+//  BUCLE DE RENDERIZADO Y RESIZE
 // ==========================================
 function animate() {
     requestAnimationFrame(animate);
