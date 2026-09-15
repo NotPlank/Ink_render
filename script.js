@@ -16,7 +16,7 @@ scene.background = new THREE.Color('#3d3a42');
 const camera = new THREE.PerspectiveCamera(45, ancho / alto, 0.1, 100);
 camera.position.set(0, 2, 5);
 
-const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
 renderer.setSize(ancho, alto);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.shadowMap.enabled = true;
@@ -64,31 +64,51 @@ const modeloGrupo = new THREE.Group();
 scene.add(modeloGrupo);
 const objLoader = new OBJLoader();
 
-objLoader.load(
-    'modelos/Male.OBJ',
-    (objeto) => {
-        objeto.traverse((hijo) => {
-            if (hijo.isMesh) {
-                hijo.material = new THREE.MeshStandardMaterial({
-                    color: 0xceccd9,
-                });
-                hijo.castShadow = true;
-                hijo.receiveShadow = true;
-            }
+let rutaModeloActual = 'modelos/Male.OBJ';
+
+// Quita todo lo que haya dentro de modeloGrupo (el cuerpo Y los
+// tatuajes ya colocados) y libera su memoria. Se usa al cambiar de
+// modelo, porque los tatuajes estaban ajustados a la superficie del
+// modelo anterior y no tendría sentido conservarlos sobre el nuevo.
+function limpiarModeloGrupo() {
+    while (modeloGrupo.children.length > 0) {
+        const hijo = modeloGrupo.children[0];
+        modeloGrupo.remove(hijo);
+        hijo.traverse((nieto) => {
+            if (nieto.geometry) nieto.geometry.dispose();
         });
-        objeto.scale.set(1, 1, 1);
-        objeto.position.set(0, 1, 0);
-        modeloGrupo.add(objeto);
-    },
-    (progreso) => {
-        if (progreso.total) {
-            console.log('Cargando modelo: ' + (progreso.loaded / progreso.total * 100).toFixed(0) + '%');
-        }
-    },
-    (error) => {
-        console.error('Error al cargar el modelo OBJ ❌', error);
     }
-);
+}
+
+function cargarModeloActual() {
+    objLoader.load(
+        rutaModeloActual,
+        (objeto) => {
+            objeto.traverse((hijo) => {
+                if (hijo.isMesh) {
+                    hijo.material = new THREE.MeshStandardMaterial({
+                        color: 0xceccd9,
+                    });
+                    hijo.castShadow = true;
+                    hijo.receiveShadow = true;
+                }
+            });
+            objeto.scale.set(1, 1, 1);
+            objeto.position.set(0, 1, 0);
+            modeloGrupo.add(objeto);
+        },
+        (progreso) => {
+            if (progreso.total) {
+                console.log('Cargando modelo: ' + (progreso.loaded / progreso.total * 100).toFixed(0) + '%');
+            }
+        },
+        (error) => {
+            console.error('Error al cargar el modelo OBJ ❌', error);
+        }
+    );
+}
+
+cargarModeloActual(); // carga inicial
 
 // ==========================================
 // 4. VARIABLES Y LÓGICA DEL TATUAJE
@@ -281,6 +301,79 @@ window.resetCamara = function () {
     controls.target.set(0, 1, 0);
     controls.update();
 };
+
+// Los dos modelos disponibles, y el icono que representa a cada uno
+// en el botón único de alternar (sin usar texto de "Hombre"/"Mujer").
+const RUTAS_MODELOS = ['modelos/Male.OBJ', 'modelos/Woman.OBJ'];
+const ICONOS_MODELOS = ['♂', '♀'];
+let indiceModeloActual = 0;
+
+// Cambia el modelo cargado. Al cambiar, se limpia el modelo anterior
+// y CUALQUIER tatuaje ya colocado sobre él (estaban ajustados a esa
+// superficie concreta, no tiene sentido conservarlos).
+function cambiarModelo(ruta) {
+    if (ruta === rutaModeloActual) return;
+    rutaModeloActual = ruta;
+
+    limpiarModeloGrupo();
+    ultimoTatuajeMalla = null;
+    datosUltimoImpacto = null;
+    materialDecal.map = null;
+    if (ventanaEditor) ventanaEditor.style.display = 'none';
+
+    cargarModeloActual();
+
+    avisarMascota('Has cambiado de modelo 🔄');
+}
+
+// Botón único: cada clic pasa al siguiente modelo de la lista y
+// actualiza su propio icono (♂ ↔ ♀, o los que se añadan después).
+window.alternarModelo = function (boton) {
+    indiceModeloActual = (indiceModeloActual + 1) % RUTAS_MODELOS.length;
+    cambiarModelo(RUTAS_MODELOS[indiceModeloActual]);
+    if (boton) boton.textContent = ICONOS_MODELOS[indiceModeloActual];
+};
+
+// Captura tal cual se ve el canvas en este momento y la guarda como
+// una foto descargable en el panel "Mis Fotos".
+window.capturarFoto = function () {
+    renderer.render(scene, camera); // aseguramos que el frame actual está pintado
+    renderer.domElement.toBlob((blob) => {
+        if (!blob) return;
+        const url = URL.createObjectURL(blob);
+        guardarFotoEnGaleria(url);
+        avisarMascota('¡Foto guardada! Descárgala desde "Mis Fotos" 📸');
+    }, 'image/png');
+};
+
+function guardarFotoEnGaleria(url) {
+    const listaFotos = document.getElementById('lista-fotos');
+    if (!listaFotos) return;
+
+    const mensajeVacio = listaFotos.querySelector('.sin-tatuajes');
+    if (mensajeVacio) mensajeVacio.remove();
+
+    const miniatura = document.createElement('div');
+    miniatura.className = 'tatuaje-thumb';
+    miniatura.title = 'Clic para descargar';
+    miniatura.style.cursor = 'pointer';
+
+    const imagen = document.createElement('img');
+    imagen.src = url;
+    imagen.alt = 'Captura del modelo';
+    miniatura.appendChild(imagen);
+
+    miniatura.addEventListener('click', () => {
+        const enlace = document.createElement('a');
+        enlace.href = url;
+        enlace.download = `ink-render-${Date.now()}.png`;
+        document.body.appendChild(enlace);
+        enlace.click();
+        document.body.removeChild(enlace);
+    });
+
+    listaFotos.appendChild(miniatura);
+}
 
 // Agrupa varias llamadas seguidas (p.ej. clics rápidos en ➕/➖) en
 // una sola reconstrucción por frame, en vez de una por clic.

@@ -3,7 +3,7 @@ document.getElementById('header-placeholder').innerHTML = `
                 <div class="row">
                     <nav class="navbar navbar-expand-lg bg-body-light">
                         <div class="container-fluid" padding-bottom:"100px">
-                            <img class="logo" width="25px" src="imagenes/logo.svg"" width="50px" onclick="window.location.href='index.html'" style="cursor: pointer;">
+                            <img class="logo" width="25px" src="imagenes/logo2.svg" width="50px" onclick="window.location.href='index.html'" style="cursor: pointer;">
                             <span class="navbar-text text-dark fs-4 d-block d-md-none mx-auto"><h1>Ink Render</h1></span>
                             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false"

@@ -1389,3 +1389,50 @@ canvas {
     transition: none;
   }
 }
+/*---------------- 3D: CONTROLES FLOTANTES SUELTOS --------------*/
+.controles-3d {
+    position: absolute;
+    left: 10px;
+    display: flex;
+    gap: 6px;
+    z-index: 5;
+}
+.controles-3d-arriba {
+    top: 10px;
+}
+.controles-3d-abajo {
+    bottom: 10px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+}
+.fila-controles-3d {
+    display: flex;
+    gap: 6px;
+}
+.btn-suelto {
+    background: rgba(0, 0, 0, 0.4);
+    border: none;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 1.2rem;
+    line-height: 1;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5));
+    transition: transform 0.1s ease, background 0.15s ease;
+    touch-action: manipulation;
+}
+.btn-suelto:hover {
+    background: rgba(0, 0, 0, 0.6);
+    transform: scale(1.1);
+}
+.btn-suelto:active {
+    transform: scale(0.92);
+}
