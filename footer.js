@@ -10,12 +10,9 @@ document.getElementById('footer-placeholder').innerHTML = `
                     <div class="col-xl-6 col-md-6 col-9 pet-container">
                         <iframe src="pet.html" id="pet-frame" scrolling="no"></iframe>
                     </div>
-
-                </div>
-            </div>
         </footer>
-        <style>
-        footer.fixed-bottom {
+<style>
+footer.fixed-bottom {
     height: 10vh;
     
 }
@@ -37,7 +34,6 @@ footer::before {
     position: absolute;
     top: 0; left: 0; width: 100%; height: 100%;
     z-index: 0;
-    /* Primeras 5 capas de tus estrellas */
     background-image:
         radial-gradient(circle, #ffffffa2 0.5px, transparent 0.5px),
         radial-gradient(circle, #ffffff6e 0.5px, transparent 0.5px),
@@ -64,7 +60,6 @@ footer::after {
     position: absolute;
     top: 0; left: 0; width: 100%; height: 100%;
     z-index: 0;
-    /* Las otras 5 capas de tus estrellas */
     background-image:
         radial-gradient(circle, #888888 0.5px, transparent 0.5px),
         radial-gradient(circle, #a5a5a55b 0.5px, transparent 0.5px),
@@ -98,10 +93,10 @@ footer::after {
         </style>
        `;
 
-// =========================================================================
-// BLOQUE TU DEGRADADO ORIGINAL + LAS ESTRELLAS QUE SÍ FUNCIONABAN
-// =========================================================================
-(function() {
+
+// Fondo
+
+(function () {
     const fondoGlobalA = document.createElement('div');
     fondoGlobalA.className = 'cielo-estrellado-fijo capa-a';
 
@@ -120,8 +115,6 @@ footer::after {
         padding: 0;
         position: relative;
     }
-
-    /* 🌟 TU DEGRADADO ORIGINAL EXACTO E INMÓVIL */
     html {
         background: linear-gradient(179deg, rgba(255, 255, 255, 1) 11%, rgba(0, 0, 0, 1) 83%) !important;
         background-attachment: fixed !important;
@@ -134,34 +127,30 @@ footer::after {
 
     .cielo-estrellado-fijo {
         position: fixed !important;
-        top: 0; left: 0; 
+        top: 40vh; left: 0; 
         width: 100vw !important; 
         height: 100vh !important;
         pointer-events: none;
     }
-
-    /* --- CAPA A: Las estrellas que funcionaban (z-index negativo, transparentes nativas) --- */
     .cielo-estrellado-fijo.capa-a {
         z-index: -2; 
         background-image:
-            radial-gradient(circle, rgba(99, 255, 242, 0.8) 1.2px, transparent 1.2px),
-            radial-gradient(circle, rgba(64, 255, 239, 0.7) 1px, transparent 1px),
+            radial-gradient(circle, rgba(165, 164, 164, 0.8) 1.2px, transparent 1.2px),
+            radial-gradient(circle, rgba(119, 119, 119, 0.66) 1px, transparent 1px),
             radial-gradient(circle, rgba(255, 255, 255, 0.6) 1px, transparent 1px);
         background-size: 140px 140px, 95px 95px, 180px 180px;
         background-position: 30px 40px, 70px 20px, 120px 100px;
-        animation: destelloLento 7s ease-in-out infinite; 
+        animation: destelloLento 2.5s ease-in-out infinite; 
     }
-
-    /* --- CAPA B: Segunda capa del sistema que funcionaba --- */
     .cielo-estrellado-fijo.capa-b {
         z-index: -1; 
         background-image:
-            radial-gradient(circle, rgba(171, 106, 255, 0.8) 1.5px, transparent 1.5px),
-            radial-gradient(circle, rgba(124, 24, 255, 0.7) 1.1px, transparent 1.1px),
-            radial-gradient(circle, rgba(255, 255, 255, 0.5) 0.9px, transparent 0.9px);
+            radial-gradient(circle, rgba(133, 133, 134, 0.8) 1.5px, transparent 1.5px),
+            radial-gradient(circle, rgba(104, 104, 104, 0.7) 1.1px, transparent 1.1px),
+            radial-gradient(circle, rgba(131, 131, 131, 0.5) 0.9px, transparent 0.9px);
         background-size: 110px 110px, 150px 150px, 80px 80px;
         background-position: 50px 60px, 25px 90px, 95px 35px;
-        animation: destelloRapido 4.5s ease-in-out infinite;
+        animation: destelloLento 4.5s ease-in-out infinite;
         animation-delay: 1.5s;
     }
 
@@ -177,3 +166,16 @@ footer::after {
     `;
     document.head.appendChild(estilosInyeccion);
 })();
+document.addEventListener('mousemove', (e) => {
+  const iframePet = document.getElementById('pet-iframe') || document.querySelector('footer iframe');
+  
+  if (iframePet && iframePet.contentWindow) {
+    const porcentajeX = e.clientX / window.innerWidth;
+    const porcentajeY = e.clientY / window.innerHeight;
+    iframePet.contentWindow.postMessage({
+      tipo: 'mirar_porcentaje',
+      x: porcentajeX,
+      y: porcentajeY
+    }, '*');
+  }
+});
