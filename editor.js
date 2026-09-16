@@ -15,6 +15,7 @@ const controlSuavizado = document.getElementById('ajuste-suavizado');
 const controlSensibilidad = document.getElementById('ajuste-sensibilidad');
 const controlDetalle = document.getElementById('ajuste-detalle');
 const controlGrosor = document.getElementById('ajuste-grosor');
+const controlSuavizarLinea = document.getElementById('ajuste-suavizar-linea');
 const controlInvertir = document.getElementById('ajuste-invertir');
 const controlColorFondo = document.getElementById('ajuste-color-fondo');
 const controlTolerancia = document.getElementById('ajuste-tolerancia');
@@ -32,7 +33,8 @@ const controlesDibujo = [
 
 const todosLosControles = [
     controlBrillo, controlContraste, controlNitidez, controlSuavizado,
-    controlSensibilidad, controlDetalle, controlGrosor, controlColorFondo, controlTolerancia
+    controlSensibilidad, controlDetalle, controlGrosor, controlSuavizarLinea,
+    controlColorFondo, controlTolerancia
 ];
 
 const btnGuardar = document.getElementById('btn-guardar');
@@ -40,6 +42,8 @@ const btnVolver = document.getElementById('btn-volver');
 const btnReset = document.getElementById('btn-reset');
 const btnFondo = document.getElementById('btn-fondo');
 const btnZoomReset = document.getElementById('btn-zoom-reset');
+const listaSubidasPanel = document.getElementById('lista-subidas-panel');
+const listaStencilsGuardados = document.getElementById('lista-stencils-guardados');
 const VALORES_POR_DEFECTO = {
     brillo: 0,
     contraste: 0,
@@ -48,6 +52,7 @@ const VALORES_POR_DEFECTO = {
     sensibilidad: 75,
     detalle: 20,
     grosor: 0,
+    suavizarLinea: 0,
     invertir: false,
     colorFondo: '#ffffff',
     tolerancia: 40
@@ -95,17 +100,29 @@ inputImagenes.addEventListener('change', (evento) => {
 
 function renderizarGaleria() {
     galeriaImagenes.innerHTML = '';
+    if (listaSubidasPanel) listaSubidasPanel.innerHTML = '';
 
     galeria.forEach((item) => {
-        const miniatura = document.createElement('div');
-        miniatura.className = 'miniatura-galeria';
         const iconoModo = item.modo === 'dibujo' ? '✏️' : '📷';
-        miniatura.innerHTML = `
+        const htmlMiniatura = `
             <img class="miniatura-img" src="${item.imgElement.src}" alt="${item.nombre}">
             <span class="miniatura-nombre">${iconoModo} ${item.nombre}</span>
         `;
+
+        const miniatura = document.createElement('div');
+        miniatura.className = 'miniatura-galeria';
+        miniatura.innerHTML = htmlMiniatura;
         miniatura.addEventListener('click', () => seleccionarImagen(item.id));
         galeriaImagenes.appendChild(miniatura);
+
+        // Mismo contenido, reflejado en el panel "Mis Stencils" de abajo
+        if (listaSubidasPanel) {
+            const miniaturaPanel = document.createElement('div');
+            miniaturaPanel.className = 'miniatura-galeria';
+            miniaturaPanel.innerHTML = htmlMiniatura;
+            miniaturaPanel.addEventListener('click', () => seleccionarImagen(item.id));
+            listaSubidasPanel.appendChild(miniaturaPanel);
+        }
     });
 }
 
@@ -171,6 +188,7 @@ function actualizarEtiquetas() {
     document.getElementById('valor-sensibilidad').textContent = controlSensibilidad.value;
     document.getElementById('valor-detalle').textContent = controlDetalle.value;
     document.getElementById('valor-grosor').textContent = controlGrosor.value;
+    document.getElementById('valor-suavizar-linea').textContent = controlSuavizarLinea.value;
     document.getElementById('valor-tolerancia').textContent = controlTolerancia.value;
 }
 function solicitarActualizacion() {
@@ -194,6 +212,7 @@ function restablecerAjustes(regenerar) {
     controlSensibilidad.value = VALORES_POR_DEFECTO.sensibilidad;
     controlDetalle.value = VALORES_POR_DEFECTO.detalle;
     controlGrosor.value = VALORES_POR_DEFECTO.grosor;
+    controlSuavizarLinea.value = VALORES_POR_DEFECTO.suavizarLinea;
     controlInvertir.checked = VALORES_POR_DEFECTO.invertir;
     controlColorFondo.value = VALORES_POR_DEFECTO.colorFondo;
     controlTolerancia.value = VALORES_POR_DEFECTO.tolerancia;
@@ -392,6 +411,42 @@ function engrosarAlfa(alfa, ancho, alto, iteraciones) {
     return actual;
 }
 
+// Lo opuesto de engrosarAlfa: adelgaza/erosiona la línea (filtro de
+// mínimo). Usado tanto para el lado negativo del slider de Grosor
+// como, combinado con engrosarAlfa, para suavizar la rugosidad.
+function erosionarAlfa(alfa, ancho, alto, iteraciones) {
+    let actual = alfa;
+    for (let it = 0; it < iteraciones; it++) {
+        const nueva = new Uint8ClampedArray(actual.length);
+        for (let y = 0; y < alto; y++) {
+            for (let x = 0; x < ancho; x++) {
+                const idx = y * ancho + x;
+                let minimo = actual[idx];
+                if (x > 0) minimo = Math.min(minimo, actual[idx - 1]);
+                if (x < ancho - 1) minimo = Math.min(minimo, actual[idx + 1]);
+                if (y > 0) minimo = Math.min(minimo, actual[idx - ancho]);
+                if (y < alto - 1) minimo = Math.min(minimo, actual[idx + ancho]);
+                nueva[idx] = minimo;
+            }
+        }
+        actual = nueva;
+    }
+    return actual;
+}
+
+// "Apertura" morfológica (erosionar y luego engrosar el mismo número
+// de veces): elimina pelillos y bordes rugosos de la línea sin
+// cambiar apenas su grosor global, porque lo que erosiona en el primer
+// paso lo recupera en el segundo — salvo las protuberancias sueltas,
+// que desaparecen del todo. Es la herramienta correcta para "líneas
+// menos rugosas" sin sacrificar grosor ni nitidez real del trazo.
+function suavizarMascara(alfa, ancho, alto, iteraciones) {
+    if (iteraciones <= 0) return alfa;
+    let resultado = erosionarAlfa(alfa, ancho, alto, iteraciones);
+    resultado = engrosarAlfa(resultado, ancho, alto, iteraciones);
+    return resultado;
+}
+
 function generarStencil() {
     const item = galeria.find((i) => i.id === imagenActualId);
     if (!item) return;
@@ -418,6 +473,7 @@ function generarStencilFoto(item) {
     const suavizado = parseInt(controlSuavizado.value, 10);
     const sensibilidad = parseInt(controlSensibilidad.value, 10);
     const detalle = parseInt(controlDetalle.value, 10);
+    const suavizarLinea = parseInt(controlSuavizarLinea.value, 10);
     const grosor = parseInt(controlGrosor.value, 10);
     const invertir = controlInvertir.checked;
     aplicarBrilloContraste(data, brillo, contraste);
@@ -438,8 +494,12 @@ function generarStencilFoto(item) {
     //  Doble umbral
     let alfa = construirAlfaConDobleUmbral(magnitudesFinas, ancho, alto, sensibilidad, detalle);
 
-    // Grosor de línea
+    // Suavizar rugosidad de la línea (quita "pelillos" sin perder grosor)
+    if (suavizarLinea > 0) alfa = suavizarMascara(alfa, ancho, alto, suavizarLinea);
+
+    // Grosor de línea (positivo engorda, negativo adelgaza/erosiona)
     if (grosor > 0) alfa = engrosarAlfa(alfa, ancho, alto, grosor);
+    else if (grosor < 0) alfa = erosionarAlfa(alfa, ancho, alto, -grosor);
 
     //   PNG 
     const salida = ctxPreview.createImageData(ancho, alto);
@@ -476,6 +536,7 @@ function generarStencilDibujo(item) {
     const brillo = parseInt(controlBrillo.value, 10);
     const contraste = parseInt(controlContraste.value, 10);
     const tolerancia = parseInt(controlTolerancia.value, 10);
+    const suavizarLinea = parseInt(controlSuavizarLinea.value, 10);
     const grosor = parseInt(controlGrosor.value, 10);
     const invertir = controlInvertir.checked;
     const colorFondo = hexARgb(controlColorFondo.value);
@@ -491,7 +552,10 @@ function generarStencilDibujo(item) {
         alfa[p] = distancia > tolerancia ? 255 : 0;
     }
 
+    if (suavizarLinea > 0) alfa = suavizarMascara(alfa, ancho, alto, suavizarLinea);
+
     if (grosor > 0) alfa = engrosarAlfa(alfa, ancho, alto, grosor);
+    else if (grosor < 0) alfa = erosionarAlfa(alfa, ancho, alto, -grosor);
 
     const salida = ctxPreview.createImageData(ancho, alto);
     const colorLinea = invertir ? 255 : 0;
@@ -511,15 +575,63 @@ function generarStencilDibujo(item) {
 btnGuardar.addEventListener('click', () => {
     const item = galeria.find((i) => i.id === imagenActualId);
     const nombreBase = item ? item.nombre.replace(/\.[^/.]+$/, '') : 'stencil';
+    const nombreArchivo = `${nombreBase}_stencil.png`;
 
     canvasPreview.toBlob((blob) => {
         const url = URL.createObjectURL(blob);
+
+        // Descarga inmediata, como ya hacía
         const enlace = document.createElement('a');
         enlace.href = url;
-        enlace.download = `${nombreBase}_stencil.png`;
+        enlace.download = nombreArchivo;
         document.body.appendChild(enlace);
         enlace.click();
         document.body.removeChild(enlace);
-        URL.revokeObjectURL(url);
+
+        // Y además queda guardada en el panel para volver a bajarla luego
+        agregarStencilGuardado(url, nombreArchivo);
     }, 'image/png');
 });
+
+function agregarStencilGuardado(url, nombreArchivo) {
+    if (!listaStencilsGuardados) return;
+
+    const mensajeVacio = listaStencilsGuardados.querySelector('.sin-tatuajes');
+    if (mensajeVacio) mensajeVacio.remove();
+
+    const miniatura = document.createElement('div');
+    miniatura.className = 'tatuaje-thumb';
+    miniatura.title = 'Clic para volver a descargar';
+    miniatura.style.cursor = 'pointer';
+
+    const imagen = document.createElement('img');
+    imagen.src = url;
+    imagen.alt = nombreArchivo;
+    miniatura.appendChild(imagen);
+
+    const botonEliminar = document.createElement('button');
+    botonEliminar.className = 'btn-eliminar';
+    botonEliminar.type = 'button';
+    botonEliminar.title = 'Quitar de la lista';
+    botonEliminar.textContent = '✕';
+    botonEliminar.addEventListener('click', (e) => {
+        e.stopPropagation();
+        URL.revokeObjectURL(url);
+        miniatura.remove();
+        if (listaStencilsGuardados.children.length === 0) {
+            listaStencilsGuardados.innerHTML = '<span class="sin-tatuajes">Aún no has guardado ningún resultado.</span>';
+        }
+    });
+    miniatura.appendChild(botonEliminar);
+
+    miniatura.addEventListener('click', () => {
+        const enlace = document.createElement('a');
+        enlace.href = url;
+        enlace.download = nombreArchivo;
+        document.body.appendChild(enlace);
+        enlace.click();
+        document.body.removeChild(enlace);
+    });
+
+    listaStencilsGuardados.appendChild(miniatura);
+}

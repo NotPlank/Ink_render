@@ -21,7 +21,7 @@
                         <div>
                             <div class="xp-btn">_</div>
                             <div class="xp-btn">❐</div>
-                            <div class="xp-btn close" onclick="window.location.href='index.html'" style="cursor:pointer;" title="Cerrar y volver al inicio">X</div>
+                            <div class="xp-btn close" onclick="window.location.href='/index.html'" style="cursor:pointer;" title="Cerrar y volver al inicio">X</div>
                         </div>
                     </div>
  
@@ -116,11 +116,21 @@
                                             <label for="ajuste-tolerancia"><span>Tolerancia</span> <span id="valor-tolerancia">40</span></label>
                                             <input type="range" id="ajuste-tolerancia" min="5" max="150" value="40">
                                         </div>
+
+                                        <div class="ajuste-item">
+                                            <label for="ajuste-nitidez-dibujo"><span>Nitidez</span> <span id="valor-nitidez-dibujo">20</span></label>
+                                            <input type="range" id="ajuste-nitidez-dibujo" min="0" max="100" value="20">
+                                        </div>
+                                    </div>
+
+                                    <div class="ajuste-item">
+                                        <label for="ajuste-suavizar-linea"><span>Suavizar línea (rugosidad)</span> <span id="valor-suavizar-linea">0</span></label>
+                                        <input type="range" id="ajuste-suavizar-linea" min="0" max="3" value="0">
                                     </div>
 
                                     <div class="ajuste-item">
                                         <label for="ajuste-grosor"><span>Grosor de línea</span> <span id="valor-grosor">0</span></label>
-                                        <input type="range" id="ajuste-grosor" min="0" max="6" value="0">
+                                        <input type="range" id="ajuste-grosor" min="-3" max="6" value="0">
                                     </div>
 
                                     <div class="ajuste-item checkbox">
@@ -132,6 +142,37 @@
                                         <button class="btn-edt" id="btn-guardar">💾 Guardar como PNG</button>
                                         <button class="btn-edt secundario" id="btn-volver">← Volver a la galería</button>
                                         <button class="btn-edt reset" id="btn-reset">↺ Restablecer ajustes</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--------------------  Mis Stencils (subidas / guardadas) ------------------- -->
+                        <div class="xp-v col-12 mt-3" id="panel-mis-stencils">
+                            <div class="xp-t col-12">
+                                <span>Mis Stencils</span>
+                                <div>
+                                    <div class="xp-btn">_</div>
+                                    <div class="xp-btn">❐</div>
+                                    <div class="xp-btn close" onclick="window.location.href='index.html'" style="cursor:pointer;" title="Cerrar y volver al inicio">X</div>
+                                </div>
+                            </div>
+                            <div class="xp-c text-start d-flex justify-content-center flex-wrap" style="gap: 2rem;">
+                                <div style="flex: 0 1 340px;">
+                                    <label class="form-label" style="font-family: sans-serif; font-size: 0.8rem; font-weight: bold;">
+                                        📥 Subidas
+                                    </label>
+                                    <div id="lista-subidas-panel" class="galeria-imagenes">
+                                        <span class="sin-tatuajes">Aún no has subido ninguna imagen.</span>
+                                    </div>
+                                </div>
+
+                                <div style="flex: 0 1 340px;">
+                                    <label class="form-label" style="font-family: sans-serif; font-size: 0.8rem; font-weight: bold;">
+                                        💾 Guardadas
+                                    </label>
+                                    <div id="lista-stencils-guardados" style="display: flex; flex-wrap: wrap; gap: 8px; padding: 0.5rem; justify-content: center;">
+                                        <span class="sin-tatuajes">Aún no has guardado ningún resultado.</span>
                                     </div>
                                 </div>
                             </div>

@@ -51,6 +51,7 @@
                 <!---------------- Vídeo --------->
                 <div class="fila-inferior entrada2">
                     <div class="hueco-video">
+                        <!-- <video autoplay loop muted playsinline></video> -->
                         <p>Vídeo de demostración</p>
                     </div>
 
@@ -59,7 +60,8 @@
                             <span>Galería</span>
                             <div>
                                 <div class="xp-btn">_</div>
-                                <div class="xp-btn">❐</div>
+                                <div class="xp-btn" onclick="window.location.href='galery.html'"
+                                    style="cursor:pointer;">❐</div>
                                 <div class="xp-btn close" onclick="window.location.href='index.html'"
                                     style="cursor:pointer;">X</div>
                             </div>
@@ -73,11 +75,10 @@
                                             <source media="(max-width: 699px)" srcset="imagenes/tattoo1movil.png">
                                             <source media="(min-width: 700px)" srcset="imagenes/tattoo1tablet.png">
                                             <img src="imagenes/tattoo1pc.png"
-                                                alt="Fog rolling over a pine ridge at dawn" loading="lazy">
+                                                alt="Ilustraciones tradicionales hechas por mí" loading="lazy">
                                         </picture>
                                         <figcaption class="cis-01__cap">
-                                            <span class="cis-01__k">01 — Ridgeline</span> Alpine fog, first light
-                                        </figcaption>
+                                            <span class="cis-01__k">01</span> Alien</figcaption>
                                     </figure>
                                 </div>
                                 <div class="foto-placeholder">
@@ -86,11 +87,10 @@
                                             <source media="(max-width: 699px)" srcset="imagenes/tattoo2movil.png">
                                             <source media="(min-width: 700px)" srcset="imagenes/tattoo2tablet.png">
                                             <img src="imagenes/tattoo2pc.png"
-                                                alt="Fog rolling over a pine ridge at dawn" loading="lazy">
+                                                 alt="Ilustraciones tradicionales hechas por mí" loading="lazy">
                                         </picture>
                                         <figcaption class="cis-01__cap">
-                                            <span class="cis-01__k">01 — Ridgeline</span> Alpine fog, first light
-                                        </figcaption>
+                                            <span class="cis-01__k">02</span> Desconocido</figcaption>
                                     </figure>
                                 </div>
                                 <div class="foto-placeholder">
@@ -99,11 +99,10 @@
                                             <source media="(max-width: 699px)" srcset="imagenes/tattoo3movil.png">
                                             <source media="(min-width: 700px)" srcset="imagenes/tattoo3tablet.png">
                                             <img src="imagenes/tattoo3pc.png"
-                                                alt="Fog rolling over a pine ridge at dawn" loading="lazy">
+                                                 alt="Ilustraciones tradicionales hechas por mí" loading="lazy">
                                         </picture>
                                         <figcaption class="cis-01__cap">
-                                            <span class="cis-01__k">01 — Ridgeline</span> Alpine fog, first light
-                                        </figcaption>
+                                            <span class="cis-01__k">03</span> Chica Alien</figcaption>
                                     </figure>
                                 </div>
                                 <div class="foto-placeholder">
@@ -112,11 +111,10 @@
                                             <source media="(max-width: 699px)" srcset="imagenes/tattoo4movil.png">
                                             <source media="(min-width: 700px)" srcset="imagenes/tattoo4tablet.png">
                                             <img src="imagenes/tattoo4pc.png"
-                                                alt="Fog rolling over a pine ridge at dawn" loading="lazy">
+                                                alt="Ilustraciones tradicionales hechas por mí" loading="lazy">
                                         </picture>
                                         <figcaption class="cis-01__cap">
-                                            <span class="cis-01__k">01 — Ridgeline</span> Alpine fog, first light
-                                        </figcaption>
+                                            <span class="cis-01__k">04</span> Chica</figcaption>
                                     </figure>
                                 </div>
                             </div>
@@ -128,6 +126,13 @@
         </main>
         <div id="footer-placeholder"></div>
     </div>
+    <script>
+        // Video
+        window.addEventListener('DOMContentLoaded', () => {
+        const video = document.getElementById('video-mi-app');
+        video.playbackRate = 2.0; 
+    });
+    </script>
 
     <script src="js/bootstrap.bundle.min.js"></script>
     <script src="header.js"></script>

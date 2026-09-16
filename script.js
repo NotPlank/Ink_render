@@ -114,7 +114,7 @@ const textureLoader = new THREE.TextureLoader();
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
-let escalaTatuaje = 0.2;
+let escalaTatuaje = 0.3;
 let rotacionTatuaje = 0;
 let desplazamientoX = 0;
 let desplazamientoY = 0;
@@ -138,6 +138,12 @@ window.aplicarTatuaje = function (urlImagen) {
     textureLoader.load(urlImagen, (textura) => {
         textura.minFilter = THREE.LinearFilter;
         textura.colorSpace = THREE.SRGBColorSpace;
+
+        // El proyector del decal (orientado con lookAt) deja la imagen
+        // en espejo horizontal sobre la piel. La volteamos aquí para
+        // que se vea tal cual la subiste, no al revés.
+        textura.wrapS = THREE.RepeatWrapping;
+        textura.repeat.x = -1;
 
         texturaTatuajeActiva = textura;
         console.log("Tatuaje listo. Haz clic en el modelo.");
@@ -184,7 +190,13 @@ function actualizarTatuajeEnTiempoReal() {
     const radianesExtra = (rotacionTatuaje * Math.PI) / 180;
     nuevaOrientacion.z += radianesExtra;
 
-    const tamañoFinal = new THREE.Vector3(escalaTatuaje, escalaTatuaje, escalaTatuaje);
+    // La profundidad del proyector NO debe crecer con el tamaño visual
+    // del tatuaje: si escala junto al ancho/alto, un tatuaje grande
+    // atraviesa el cuerpo entero y se estampa también por el otro lado
+    // (p.ej. espalda -> también aparece en el pecho). La dejamos fija,
+    // pequeña, solo lo justo para recortar bien la curvatura de la piel.
+    const PROFUNDIDAD_PROYECTOR = 0.15;
+    const tamañoFinal = new THREE.Vector3(escalaTatuaje, escalaTatuaje, PROFUNDIDAD_PROYECTOR);
 
     const geometriaDecal = new DecalGeometry(
         datosUltimoImpacto.mallaCuerpo,
@@ -283,7 +295,7 @@ window.resetCamara = function () {
 
 
 const RUTAS_MODELOS = ['modelos/Male.OBJ', 'modelos/Woman.OBJ'];
-const ICONOS_MODELOS = ['♂', '♀'];
+const ICONOS_MODELOS = ['🟣', '🔵'];
 let indiceModeloActual = 0;
 
 function cambiarModelo(ruta) {
@@ -370,7 +382,7 @@ window.girarTatuaje = function (grados) {
 };
 
 window.moverTatuaje = function (direccion) {
-    const pasoDesplazamiento = 0.01; // Ajuste fino milimétrico
+    const pasoDesplazamiento = 0.01; 
     switch (direccion) {
         case 'arriba': desplazamientoY += pasoDesplazamiento; break;
         case 'abajo': desplazamientoY -= pasoDesplazamiento; break;

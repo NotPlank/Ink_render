@@ -34,27 +34,29 @@
 
         </div><!-- fin del estrellas -->
 
-        <div style="position: fixed ; top: 130vh ; right: -60vw ; z-index: 999;">
-            <a href="https://instagram.com" target="_blank"
-                style="position: relative; z-index: 999999; display: inline-block; vertical-align: middle; margin-top:60px; margin-left: -90px; margin-right: -300px;">
-                <img src="imagenes/instagram-logo.svg" alt="Instagram" width=655" height="65"
-                    style="filter: brightness(0) saturate(100%) invert(20%) sepia(94%) saturate(7469%) hue-rotate(264deg) brightness(97%) contrast(107%) !important;">
+        <div style="position: fixed ; top: 300px ; right: -30px ; z-index: 999;">
+            <a href="https://instagram.com/davidsfgh" target="_blank">
+                <img src="imagenes/instagram-Logo.svg" alt="Instagram" style=" height: 5rem; width: 7.5rem; filter: hue-rotate(260deg) saturate(1.8); ">
             </a>
-
-
         </div>
+
     </div><!-- Fin del espacio -->
     <!-- Bocadillos -->
     <script>
         const bocadillo = document.getElementById('bocadillo');
         const textoBocadillo = document.getElementById('texto-bocadillo');
         const mascota = document.getElementById('pet-scale');
+
         let paginaActual = '';
+
         try {
-            paginaActual = window.parent.location.pathname.toLowerCase();
+            if (window.parent !== window) {
+                paginaActual = window.parent.location.pathname.toLowerCase();
+            }
         } catch (e) {
             paginaActual = '';
         }
+
         const enPagina3D = paginaActual.includes('3d.html');
 
         const tips3D = [
@@ -64,35 +66,68 @@
             'Puedes cambiar de modelo con el botón de arriba a la izquierda.',
             'Haz una foto con el botón 📸 y descárgala luego desde "Mis Fotos".'
         ];
+
+        const tipsGenerales = [
+            'Con el Stencil puedes limpiar el fondo de una foto o dibujo y quedarte solo con las líneas.',
+            'En el Simulador 3D puedes probar cómo queda un tatuaje sobre un cuerpo antes de hacerlo.',
+            'Todo se procesa en tu navegador: tus imágenes nunca se suben a ningún servidor.'
+        ];
+
         let indiceTip = 0;
         let temporizadorOcultar = null;
 
         function mostrarBocadillo(texto) {
+
+            // Mover el bocadillo al documento principal
             window.parent.document.body.appendChild(bocadillo);
 
-            const frameMascota = window.parent.document.getElementById('pet-frame');
+            const frameMascota = window.frameElement;
+
             if (!frameMascota) return;
+
             const posFrame = frameMascota.getBoundingClientRect();
+
             bocadillo.style.left = `${posFrame.left + (posFrame.width / 2)}px`;
             bocadillo.style.top = `${posFrame.top - 10}px`;
+
             textoBocadillo.textContent = texto;
             bocadillo.classList.add('visible');
+
             clearTimeout(temporizadorOcultar);
+
             temporizadorOcultar = setTimeout(() => {
                 bocadillo.classList.remove('visible');
             }, 5000);
         }
 
         if (mascota) {
+
             mascota.addEventListener('click', () => {
-                if (!enPagina3D || tips3D.length === 0) return;
-                mostrarBocadillo(tips3D[indiceTip]);
-                indiceTip = (indiceTip + 1) % tips3D.length;
+
+                // 3D → tips específicos
+                // Resto de páginas → tips generales
+                const listaTips = enPagina3D ? tips3D : tipsGenerales;
+
+                if (listaTips.length === 0) return;
+
+                mostrarBocadillo(
+                    listaTips[indiceTip % listaTips.length]
+                );
+
+                indiceTip = (indiceTip + 1) % listaTips.length;
             });
         }
+
+        // Recibir mensajes enviados desde otras partes de la web
         window.addEventListener('message', (evento) => {
+
             if (evento.origin !== window.location.origin) return;
-            if (evento.data && evento.data.tipo === 'tip3d' && evento.data.texto) {
+
+            if (
+                evento.data &&
+                evento.data.tipo === 'tip3d' &&
+                evento.data.texto
+            ) {
                 mostrarBocadillo(evento.data.texto);
             }
         });

@@ -4,7 +4,7 @@ document.getElementById('footer-placeholder').innerHTML = "
                 <div class="row h-100 align-items-start">
 
                     <div class="col-xl-6 col-md-6 col-3">
-                        <!-- Aquí puedes poner un logo o dejarlo vacío -->
+                
                     </div>
 
                     <div class="col-xl-6 col-md-6 col-9 pet-container">

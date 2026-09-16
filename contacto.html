@@ -10,6 +10,7 @@
     <link rel="icon" type="image/jpg" href="imagenes/logofavicon.svg">
 
 <body>
+
     <div class="wrapper">
         <div id="header-placeholder"></div>
         <main>
@@ -23,40 +24,154 @@
                                 <div class="d-flex gap-2">
                                     <div class="xp-btn">_</div>
                                     <div class="xp-btn">❐</div>
-                                    <div class="xp-btn close" onclick="window.location.href='index.html'"
+                                    <div class="xp-btn close" onclick="window.location.href='/index.html'"
                                         style="cursor:pointer;" title="Cerrar y volver al inicio">X</div>
                                 </div>
                             </div>
                             <div class="xp-c text-center" id="content">
-                                <fieldset class="ink-fieldset">
-                                    <legend class="ink-legend">Datos de contacto</legend>
+                                <form id="mi-formulario-contacto" action="#" method="POST"
+                                    enctype="multipart/form-data" novalidate>
 
-                                    <label for="nombre" class="ink-label">Nombre:</label>
-                                    <input id="nombre" required type="text" placeholder="Introduce tu nombre" class="ink-input">
+                                    <fieldset class="ink-fieldset">
+                                        <legend class="ink-legend">Datos de contacto</legend>
 
-                                    <label for="apellido" class="ink-label">Apellido:</label>
-                                    <input id="apellido" type="text" placeholder="Introduce tu apellido"
-                                        class="ink-input">
-                                    <br>
-                                    <label for="email" class="ink-label">Correo:</label>
-                                    <input id="email" required placeholder="Introduce tu correo" type="email" class="ink-input">
-                                    <br>
-                                    <label for="mensaje" class="ink-label">¿En qué puedo ayudarte?</label>
-                                    <textarea id="mensaje" placeholder="Escribe aquí tu duda, idea o proyecto..."
-                                        class="ink-input" required rows="4" maxlength="400"></textarea>
-                                    <br>
-                                    <input class="enviar" value="Enviar" type="submit">
-                                </fieldset>
+                                        <label for="nombre" class="ink-label">Nombre:</label>
+                                        <input id="nombre" name="nombre" required type="text"
+                                            placeholder="Introduce tu nombre" class="ink-input">
+
+                                        <label for="apellido" class="ink-label">Apellido:</label>
+                                        <input id="apellido" name="apellido" type="text"
+                                            placeholder="Introduce tu apellido" class="ink-input">
+                                        <br>
+
+                                        <label for="email" class="ink-label">Correo:</label>
+                                        <input id="email" name="email" required placeholder="Introduce tu correo"
+                                            type="email" class="ink-input">
+                                        <br>
+
+                                        <label for="mensaje" class="ink-label">¿En qué puedo ayudarte?</label>
+                                        <textarea id="mensaje" name="mensaje"
+                                            placeholder="Escribe aquí tu duda, idea o proyecto..." class="ink-input"
+                                            required rows="4" maxlength="400"></textarea>
+
+                                        <!-- Zona de carga de archivos -->
+                                        <div
+                                            style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; margin: 25px auto; max-width: 420px; width: 90%; background-color: rgb(255, 255, 255); padding: 15px; border-radius: 10px; border: 2px dashed #8825f8;">
+
+                                            <label for="subir-tatuaje" class="ink-label"
+                                                style="font-family: sans-serif; font-size: 0.9rem; font-weight: bold; margin: 0;">
+                                                ✏️ Sube tus diseños <span style="color: #87919b;font-size: 0.7rem;">
+                                                    (opcional)</span></label>
+                                            <input type="file" id="subir-tatuaje" name="user-artwork[]"
+                                                accept="image/png, image/jpeg" multiple class="form-control"
+                                                style="font-family: sans-serif; font-size: 0.95rem; width: 100%;">
+
+                                            <div id="galeria-imagenes"
+                                                style="width: 100%; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; min-height: 20px;">
+                                                <span class="sin-tatuajes"
+                                                    style="font-family: sans-serif; font-size: 0.85rem; color: #87919b;">Aún
+                                                    no has subido ningún tatuaje.</span>
+                                            </div>
+                                            <input type="checkbox" id="acepta-compartir" name="acepta-compartir"
+                                                required style="margin-top: 3px; accent-color: #8825f8; display: none;">
+                                            <label for="acepta-compartir" id="label-compartir"
+                                                style="font-family: sans-serif; font-size: 0.85rem; cursor: pointer; display: flex; align-items: flex-start; gap: 8px; text-align: left; width: 100%; margin-top: 5px;">
+                                                <input type="checkbox" id="acepta-compartir" name="acepta-compartir"
+                                                    required style="margin-top: 3px; accent-color: #8825f8;">
+                                                <span>Autorizo a que compartas mis creaciones en la web.*</span>
+                                            </label>
+
+                                        </div>
+
+                                        <input class="enviar" value="Enviar" type="submit">
+                                    </fieldset>
+
+                                </form>
                             </div>
+
                         </div>
-
                     </div>
-                </div>
 
+                </div>
             </div>
-        </main>
-        <div id="footer-placeholder"></div>
+
     </div>
+    </main>
+    <div id="footer-placeholder"></div>
+    </div>
+    <script>
+        // --- MINIATURAS ---
+       document.getElementById('mi-formulario-contacto').addEventListener('submit', function (event) {
+    const camposObligatorios = this.querySelectorAll('[required]');
+    const inputArchivos = document.getElementById('subir-tatuaje');
+    const checkboxCompartir = document.getElementById('acepta-compartir');
+    const labelCompartir = document.getElementById('label-compartir');
+
+    let formularioValido = true;
+    camposObligatorios.forEach(campo => {
+        let label = document.querySelector(`label[for="${campo.id}"]`);
+
+        if (!campo.value.trim()) {
+            event.preventDefault();
+            formularioValido = false;
+
+            campo.classList.add('campo-error');
+            if (label) label.classList.add('label-error');
+
+            setTimeout(() => { campo.classList.remove('campo-error'); }, 400);
+        } else {
+            if (label) label.classList.remove('label-error');
+        }
+    });
+
+    if (inputArchivos.files.length > 0) {
+        const formatosPermitidos = ['image/png', 'image/jpeg', 'image/jpg'];
+        let pesoTotal = 0;
+        const pesoMaximo = 10 * 1024 * 1024;
+        for (let i = 0; i < inputArchivos.files.length; i++) {
+            const archivo = inputArchivos.files[i];
+            pesoTotal += archivo.size;
+            if (!formatosPermitidos.includes(archivo.type)) {
+                event.preventDefault();
+                formularioValido = false;
+                alert('⚠️ Seguridad: Solo se permiten imágenes en formato PNG o JPG.');
+                inputArchivos.classList.add('campo-error');
+                return; 
+            }
+        }
+        if (pesoTotal > pesoMaximo) {
+            event.preventDefault();
+            formularioValido = false;
+            alert('⚠️ El tamaño total de las imágenes supera el límite de 10 MB.');
+            inputArchivos.classList.add('campo-error');
+            return;
+        }
+    }
+    if (inputArchivos.files.length > 0 && !checkboxCompartir.checked) {
+        event.preventDefault();
+        formularioValido = false;
+
+        checkboxCompartir.classList.add('campo-error');
+        if (labelCompartir) labelCompartir.classList.add('label-error');
+
+        setTimeout(() => { checkboxCompartir.classList.remove('campo-error'); }, 400);
+    } else {
+        if (labelCompartir) labelCompartir.classList.remove('label-error');
+    }
+    
+    if (formularioValido) {
+        //   event.preventDefault(); 
+        const botonEnviar = this.querySelector('.enviar');
+        if (botonEnviar) {
+            botonEnviar.value = "✓ ¡Enviado con éxito!";
+            botonEnviar.style.backgroundColor = "#93ddff71"; 
+            botonEnviar.style.pointerEvents = "none"; 
+        }
+    }
+});
+
+
+    </script>
     <style>
         .ink-input {
             margin: 10px;
@@ -76,7 +191,7 @@
             color: rgb(51, 51, 51);
             font-weight: 600;
             display: block;
-            margin-top: 10px;
+            margin-top: 5px;
         }
 
         .ink-textarea {
@@ -90,17 +205,16 @@
         .ink-fieldset {
             border: 4px solid transparent;
             border-radius: 20px;
-            background-color: rgba(232, 231, 248, 0.637);
+            background-color: rgb(249, 248, 250);
             width: 100%;
-            max-width: 75%;
             padding: 3rem 2rem;
             box-shadow: 15px 3px 20px #0004,
                 -15px 0px 30px #0002;
             position: relative;
             transition: border-color 0.9 ease;
-            margin: 1.5rem auto;
             justify-content: center;
         }
+
         .ink-legend {
             color: rgba(2, 2, 2, 0.991);
             margin-bottom: 20px;
@@ -127,8 +241,88 @@
             color: white;
             border: 1px solid rgb(63, 1, 207);
         }
-    </style>
 
+        /* Animación error */
+        @keyframes sacudida {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            20%,
+            60% {
+                transform: translateX(-6px);
+            }
+
+            40%,
+            80% {
+                transform: translateX(6px);
+            }
+        }
+
+        .campo-error {
+            animation: sacudida 0.4s ease-in-out;
+            border: 2px solid #e02424;
+        }
+
+        .label-error {
+            color: #8825f8;
+            transition: color 0.3s ease;
+        }
+
+        /* Efecto fondo */
+        #content {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            overflow: hidden;
+        }
+        #content {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            overflow: hidden;
+            background-color: white;
+        }
+        #content::before {
+            content: "";
+            position: absolute;
+            top: -10%;
+            left: -10%;
+            width: 120%;
+            height: 120%;
+            z-index: 1;
+            background: radial-gradient(circle at 50% 50%,
+                    rgba(255, 255, 255, 0.2) 0%,
+                    rgba(136, 37, 248, 0.404) 30%,
+                    rgba(8, 156, 255, 0.37) 60%,
+                    rgba(94, 234, 213, 0.048) 80%,
+                    rgba(255, 255, 255, 0.623) 100%);
+
+            animation: latidoParpadeo 5s ease-in-out infinite alternate;
+        }
+        #content form {
+            position: relative;
+            z-index: 2;
+        }
+
+        @keyframes latidoParpadeo {
+            0% {
+                transform: scale(0.8);
+                opacity: 0.1;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 0.4;
+            }
+        }
+    </style>
     <script src="js/bootstrap.bundle.min.js"></script>
     <script src="header.js"></script>
     <script src="footer.js"></script>

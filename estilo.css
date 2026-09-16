@@ -26,6 +26,9 @@ footer, header, hgroup, menu, nav, section {
 body {
 	line-height: 1;
 	background-color: rgb(0, 0, 0);
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
 }
 ol, ul {
 	list-style: none;
@@ -332,6 +335,10 @@ main{
 	min-height: 100vh;
 	background: linear-gradient(179deg, rgba(255, 255, 255, 1) 8%, rgba(0, 0, 0, 1) 83%);
 }
+::selection {
+    background: #8825f8;
+    color: white;
+}
 video{
 	width: 45vw;
 	height: 20vw;
@@ -465,6 +472,7 @@ canvas {
     flex-shrink: 0;
     margin-bottom: 2000px;
 }
+
 #subir-tatuaje {
     font-family: sans-serif;
     font-size: 0.85rem;
@@ -645,7 +653,9 @@ canvas {
   cursor: pointer;
   transition: background-color 0.25s ease;
 }
-
+.color{
+    color: #8825f8;
+}
 .faq-question:hover {
   background: var(--card-hover);
 }
@@ -729,10 +739,11 @@ canvas {
     font-family: 'Segoe UI', system-ui, sans-serif;
     color: var(--text);
     position: relative;
-    width: min(920px, 92vw);
-    height: 80vh;
-    aspect-ratio: 16/10.4;
-    margin: 40px auto;
+     width: min(740px, 92vw); /* Subido a 740px (un punto medio equilibrado) */
+    height: 62vh;            /* Subido a 62vh para dar más aire vertical */
+    aspect-ratio: 16/10.4;   /* Sigue manteniendo la proporción original intacta */
+    
+    margin: 35px auto;
 }
 
 .cis-01 input {
@@ -757,20 +768,24 @@ canvas {
     display: flex;
     width: 400%;
     height: 100%;
-    transition: transform var(--dur) cubic-bezier(.7, 0, .15, 1)
+    transition: transform var(--dur) cubic-bezier(.7, 0, .15, 1);
+    
+    
 }
 
 .cis-01__slide {
     position: relative;
     width: 25%;
-    height: 100%
+    height: 100%;
+    
 }
 
 .cis-01__slide img {
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
-    display: block
+    display: block;
+    
 }
 
 .cis-01__cap {
@@ -787,8 +802,9 @@ canvas {
     gap: 4px;
     background: linear-gradient(transparent, rgba(6, 7, 10, .86));
     transform: translateY(14px);
-    opacity: 0;
-    transition: transform .5s .1s, opacity .5s .1s
+    opacity: 50%;
+    transition: transform .5s .1s, opacity .5s .1s;
+    
 }
 
 .cis-01__k {
@@ -796,7 +812,7 @@ canvas {
     font-weight: 700;
     letter-spacing: .22em;
     text-transform: uppercase;
-    color: var(--accent)
+    color: var(--accent);
 }
 
 #cis-01-1:checked~.cis-01__viewport .cis-01__track {
@@ -1002,7 +1018,7 @@ canvas {
 }
 .modo-edicion {
     margin-top: 1.5rem;
-    margin-bottom: 13vh;
+    /* margin-bottom: 13vh; */
     font-family: sans-serif;
     text-align: left;
 }
@@ -1373,12 +1389,55 @@ canvas {
         width: 100%;
     }
     .cis-01 {
-        width: 95vw;
-        margin: 20px;
-        padding: 20px;
+        height: auto !important;
+        aspect-ratio: auto !important;
+        min-height: 380px !important;
+        overflow: visible !important;
     }
-    .carrusel-fotos {
-        height: 25vh !important;
+    .cis-01__viewport,
+    .cis-01__track,
+    .cis-01__slide {
+        height: 100% ;
+    }
+
+    .cis-01__slide picture img {
+        width: 100% ;
+        height: 100% ;
+        object-fit: cover ;
+    }
+
+    .cis-01__arrows {
+        position: absolute ;
+        top: 50% ;
+        left: 0 ;
+        right: 0 ;
+        width: 100% ;
+        height: 40px ;
+        transform: translateY(-50%) ;
+        z-index: 999 !important; 
+        display: block !important;
+        overflow: visible !important;
+        pointer-events: none;
+        pointer-events: auto !important;
+        display: none; 
+        
+    }
+
+    .cis-01 .a-prev { 
+        left: 20px ; 
+    }
+    .cis-01 .a-next { 
+        right: 40px ;
+    }
+    #cis-01-1:checked ~ .cis-01__arrows .n1, #cis-01-1:checked ~ .cis-01__arrows .p1,
+    #cis-01-2:checked ~ .cis-01__arrows .n2, #cis-01-2:checked ~ .cis-01__arrows .p2,
+    #cis-01-3:checked ~ .cis-01__arrows .n3, #cis-01-3:checked ~ .cis-01__arrows .p3,
+    #cis-01-4:checked ~ .cis-01__arrows .n4, #cis-01-4:checked ~ .cis-01__arrows .p4 {
+        display: block ;
+    }
+    .cis-01__dots {
+        bottom: 12px ;
+        z-index: 1000 ;
     }
 
 }
