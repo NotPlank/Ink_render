@@ -123,13 +123,16 @@ let ultimoTatuajeMalla = null;
 let datosUltimoImpacto = null;
 const ventanaEditor = document.getElementById('ventana-editor-tatuaje');
 
-const materialDecal = new THREE.MeshStandardMaterial({
-    transparent: true,
-    depthTest: true,
-    depthWrite: false,
-    polygonOffset: true,
-    polygonOffsetFactor: -4
-});
+function crearMaterialDecal() {
+    return new THREE.MeshStandardMaterial({
+        transparent: true,
+        depthTest: true,
+        depthWrite: false,
+        polygonOffset: true,
+        polygonOffsetFactor: -4
+    });
+}
+let materialDecalActual = null;
 
 window.aplicarTatuaje = function (urlImagen) {
     textureLoader.load(urlImagen, (textura) => {
@@ -159,9 +162,10 @@ function avisarMascota(texto) {
 }
 
 function actualizarTatuajeEnTiempoReal() {
-    if (!datosUltimoImpacto || (!texturaTatuajeActiva && !materialDecal.map)) return;
+    if (!datosUltimoImpacto || (!texturaTatuajeActiva && !materialDecalActual)) return;
+    if (!materialDecalActual) materialDecalActual = crearMaterialDecal();
 
-    const texturaUsar = texturaTatuajeActiva || materialDecal.map;
+    const texturaUsar = texturaTatuajeActiva || materialDecalActual.map;
 
     if (ultimoTatuajeMalla) {
         modeloGrupo.remove(ultimoTatuajeMalla);
@@ -191,10 +195,10 @@ function actualizarTatuajeEnTiempoReal() {
 
     geometriaDecal.applyMatrix4(modeloGrupo.matrixWorld.clone().invert());
 
-    materialDecal.map = texturaUsar;
-    materialDecal.needsUpdate = true;
+    materialDecalActual.map = texturaUsar;
+    materialDecalActual.needsUpdate = true;
 
-    ultimoTatuajeMalla = new THREE.Mesh(geometriaDecal, materialDecal);
+    ultimoTatuajeMalla = new THREE.Mesh(geometriaDecal, materialDecalActual);
     modeloGrupo.add(ultimoTatuajeMalla);
 }
 
@@ -227,6 +231,7 @@ contenedor.addEventListener('click', (evento) => {
         desplazamientoX = 0;
         desplazamientoY = 0;
         ultimoTatuajeMalla = null;
+        materialDecalActual = null; 
 
         datosUltimoImpacto = {
             mallaCuerpo: mallaCuerpo,
@@ -288,7 +293,7 @@ function cambiarModelo(ruta) {
     limpiarModeloGrupo();
     ultimoTatuajeMalla = null;
     datosUltimoImpacto = null;
-    materialDecal.map = null;
+    materialDecalActual = null;
     if (ventanaEditor) ventanaEditor.style.display = 'none';
 
     cargarModeloActual();

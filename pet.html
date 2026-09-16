@@ -36,11 +36,13 @@
 
         <div style="position: fixed ; top: 130vh ; right: -60vw ; z-index: 999;">
             <a href="https://instagram.com" target="_blank"
-                style="height: 7.5rem; width: 7.5rem; background: #160077; border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.5); display: inline-flex; justify-content: center; align-items: center; text-decoration: none; color: white; font-size: 2.5rem;">
-                [◉°]
+                style="position: relative; z-index: 999999; display: inline-block; vertical-align: middle; margin-top:60px; margin-left: -90px; margin-right: -300px;">
+                <img src="imagenes/instagram-logo.svg" alt="Instagram" width=655" height="65"
+                    style="filter: brightness(0) saturate(100%) invert(20%) sepia(94%) saturate(7469%) hue-rotate(264deg) brightness(97%) contrast(107%) !important;">
             </a>
-        </div>
 
+
+        </div>
     </div><!-- Fin del espacio -->
     <!-- Bocadillos -->
     <script>
@@ -130,8 +132,8 @@
 
         window.addEventListener('message', (e) => {
             if (e.data && e.data.tipo === 'mirar_porcentaje') {
-                const petPorcentajeX = 0.5; 
-                const petPorcentajeY = 0.9; 
+                const petPorcentajeX = 0.5;
+                const petPorcentajeY = 0.9;
 
                 const deltaX = e.data.x - petPorcentajeX;
                 const deltaY = e.data.y - petPorcentajeY;
@@ -179,7 +181,7 @@
                 const puedoMostrarExclamacion = (typeof enPagina3D !== 'undefined') ? enPagina3D : false;
 
                 if (puedoMostrarExclamacion) {
-                   
+
                     setTimeout(() => {
                         alerta.classList.add("activo");
                     }, 8000);

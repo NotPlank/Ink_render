@@ -1,4 +1,3 @@
-
 // -----------STENCIL----------- // 
 
 const inputImagenes = document.getElementById('input-imagenes');
@@ -17,10 +16,23 @@ const controlSensibilidad = document.getElementById('ajuste-sensibilidad');
 const controlDetalle = document.getElementById('ajuste-detalle');
 const controlGrosor = document.getElementById('ajuste-grosor');
 const controlInvertir = document.getElementById('ajuste-invertir');
+const controlColorFondo = document.getElementById('ajuste-color-fondo');
+const controlTolerancia = document.getElementById('ajuste-tolerancia');
+
+const grupoAjustesFoto = document.getElementById('grupo-ajustes-foto');
+const grupoAjustesDibujo = document.getElementById('grupo-ajustes-dibujo');
+
+const controlesFoto = [
+    controlBrillo, controlContraste, controlNitidez, controlSuavizado,
+    controlSensibilidad, controlDetalle, controlGrosor
+];
+const controlesDibujo = [
+    controlBrillo, controlContraste, controlColorFondo, controlTolerancia, controlGrosor
+];
 
 const todosLosControles = [
     controlBrillo, controlContraste, controlNitidez, controlSuavizado,
-    controlSensibilidad, controlDetalle, controlGrosor
+    controlSensibilidad, controlDetalle, controlGrosor, controlColorFondo, controlTolerancia
 ];
 
 const btnGuardar = document.getElementById('btn-guardar');
@@ -36,7 +48,9 @@ const VALORES_POR_DEFECTO = {
     sensibilidad: 75,
     detalle: 20,
     grosor: 0,
-    invertir: false
+    invertir: false,
+    colorFondo: '#ffffff',
+    tolerancia: 40
 };
 const canvasOriginal = document.createElement('canvas');
 const ctxOriginal = canvasOriginal.getContext('2d', { willReadFrequently: true });
@@ -48,8 +62,14 @@ let nivelZoom = 1;
 
 //  SUBIDA DE ARCHIVOS Y GALERÍA
 
+function modoSeleccionadoActual() {
+    const radio = document.querySelector('input[name="modo-stencil"]:checked');
+    return radio ? radio.value : 'foto';
+}
+
 inputImagenes.addEventListener('change', (evento) => {
     const archivos = Array.from(evento.target.files);
+    const modo = modoSeleccionadoActual();
 
     archivos.forEach((archivo) => {
         if (archivo.type !== 'image/jpeg' && archivo.type !== 'image/png') {
@@ -62,7 +82,7 @@ inputImagenes.addEventListener('change', (evento) => {
             const img = new Image();
             img.onload = () => {
                 const id = 'img_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
-                galeria.push({ id, nombre: archivo.name, imgElement: img });
+                galeria.push({ id, nombre: archivo.name, imgElement: img, modo });
                 renderizarGaleria();
             };
             img.src = e.target.result;
@@ -79,9 +99,10 @@ function renderizarGaleria() {
     galeria.forEach((item) => {
         const miniatura = document.createElement('div');
         miniatura.className = 'miniatura-galeria';
+        const iconoModo = item.modo === 'dibujo' ? '✏️' : '📷';
         miniatura.innerHTML = `
             <img class="miniatura-img" src="${item.imgElement.src}" alt="${item.nombre}">
-            <span class="miniatura-nombre">${item.nombre}</span>
+            <span class="miniatura-nombre">${iconoModo} ${item.nombre}</span>
         `;
         miniatura.addEventListener('click', () => seleccionarImagen(item.id));
         galeriaImagenes.appendChild(miniatura);
@@ -95,8 +116,6 @@ function seleccionarImagen(id) {
     if (!item) return;
 
     imagenActualId = id;
-
-    // Calculamos el tamaño de trabajo manteniendo la proporción
     const img = item.imgElement;
     let ancho = img.naturalWidth;
     let alto = img.naturalHeight;
@@ -113,6 +132,9 @@ function seleccionarImagen(id) {
     canvasPreview.height = alto;
     canvasOriginal.width = ancho;
     canvasOriginal.height = alto;
+    const esDibujo = item.modo === 'dibujo';
+    grupoAjustesFoto.classList.toggle('d-none', esDibujo);
+    grupoAjustesDibujo.classList.toggle('d-none', !esDibujo);
 
     restablecerAjustes(false);
     restablecerZoom();
@@ -149,6 +171,7 @@ function actualizarEtiquetas() {
     document.getElementById('valor-sensibilidad').textContent = controlSensibilidad.value;
     document.getElementById('valor-detalle').textContent = controlDetalle.value;
     document.getElementById('valor-grosor').textContent = controlGrosor.value;
+    document.getElementById('valor-tolerancia').textContent = controlTolerancia.value;
 }
 function solicitarActualizacion() {
     if (actualizacionPendiente) return;
@@ -172,6 +195,8 @@ function restablecerAjustes(regenerar) {
     controlDetalle.value = VALORES_POR_DEFECTO.detalle;
     controlGrosor.value = VALORES_POR_DEFECTO.grosor;
     controlInvertir.checked = VALORES_POR_DEFECTO.invertir;
+    controlColorFondo.value = VALORES_POR_DEFECTO.colorFondo;
+    controlTolerancia.value = VALORES_POR_DEFECTO.tolerancia;
     actualizarEtiquetas();
     if (regenerar) generarStencil();
 }
@@ -371,6 +396,14 @@ function generarStencil() {
     const item = galeria.find((i) => i.id === imagenActualId);
     if (!item) return;
 
+    if (item.modo === 'dibujo') {
+        generarStencilDibujo(item);
+    } else {
+        generarStencilFoto(item);
+    }
+}
+
+function generarStencilFoto(item) {
     const ancho = canvasPreview.width;
     const alto = canvasPreview.height;
 
@@ -385,7 +418,7 @@ function generarStencil() {
     const suavizado = parseInt(controlSuavizado.value, 10);
     const sensibilidad = parseInt(controlSensibilidad.value, 10);
     const detalle = parseInt(controlDetalle.value, 10);
-    const grosor = parseInt(controlGrosor.value, 8);
+    const grosor = parseInt(controlGrosor.value, 10);
     const invertir = controlInvertir.checked;
     aplicarBrilloContraste(data, brillo, contraste);
     aGrises(data);
@@ -409,6 +442,57 @@ function generarStencil() {
     if (grosor > 0) alfa = engrosarAlfa(alfa, ancho, alto, grosor);
 
     //   PNG 
+    const salida = ctxPreview.createImageData(ancho, alto);
+    const colorLinea = invertir ? 255 : 0;
+    for (let i = 0; i < alfa.length; i++) {
+        const idx = i * 4;
+        salida.data[idx] = colorLinea;
+        salida.data[idx + 1] = colorLinea;
+        salida.data[idx + 2] = colorLinea;
+        salida.data[idx + 3] = alfa[i];
+    }
+
+    ctxPreview.putImageData(salida, 0, 0);
+}
+
+function hexARgb(hex) {
+    const limpio = hex.replace('#', '');
+    return {
+        r: parseInt(limpio.substring(0, 2), 16),
+        g: parseInt(limpio.substring(2, 4), 16),
+        b: parseInt(limpio.substring(4, 6), 16)
+    };
+}
+
+function generarStencilDibujo(item) {
+    const ancho = canvasPreview.width;
+    const alto = canvasPreview.height;
+
+    ctxOriginal.clearRect(0, 0, ancho, alto);
+    ctxOriginal.drawImage(item.imgElement, 0, 0, ancho, alto);
+    const imageData = ctxOriginal.getImageData(0, 0, ancho, alto);
+    const data = imageData.data;
+
+    const brillo = parseInt(controlBrillo.value, 10);
+    const contraste = parseInt(controlContraste.value, 10);
+    const tolerancia = parseInt(controlTolerancia.value, 10);
+    const grosor = parseInt(controlGrosor.value, 10);
+    const invertir = controlInvertir.checked;
+    const colorFondo = hexARgb(controlColorFondo.value);
+
+    aplicarBrilloContraste(data, brillo, contraste);
+
+    let alfa = new Uint8ClampedArray(ancho * alto);
+    for (let i = 0, p = 0; i < data.length; i += 4, p++) {
+        const dr = data[i] - colorFondo.r;
+        const dg = data[i + 1] - colorFondo.g;
+        const db = data[i + 2] - colorFondo.b;
+        const distancia = Math.sqrt(dr * dr + dg * dg + db * db);
+        alfa[p] = distancia > tolerancia ? 255 : 0;
+    }
+
+    if (grosor > 0) alfa = engrosarAlfa(alfa, ancho, alto, grosor);
+
     const salida = ctxPreview.createImageData(ancho, alto);
     const colorLinea = invertir ? 255 : 0;
     for (let i = 0; i < alfa.length; i++) {
