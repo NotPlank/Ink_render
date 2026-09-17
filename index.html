@@ -52,8 +52,10 @@
                 <!---------------- Vídeo --------->
                 <div class="fila-inferior entrada2">
                     <div class="hueco-video">
-                        <!-- <video autoplay loop muted playsinline></video> -->
-                        <p>Vídeo de demostración</p>
+                        <video id="video-mi-app" autoplay loop muted playsinline>
+                            <source src="videos/demo2.mp4" type="video/mp4">
+                        </video>
+
                     </div>
 
                     <div class="xp-v ventana-fotos entrada2">
@@ -79,7 +81,8 @@
                                                 alt="Ilustraciones tradicionales hechas por mí" loading="lazy">
                                         </picture>
                                         <figcaption class="cis-01__cap">
-                                            <span class="cis-01__k">01</span> Alien</figcaption>
+                                            <span class="cis-01__k">01</span> Alien
+                                        </figcaption>
                                     </figure>
                                 </div>
                                 <div class="foto-placeholder">
@@ -88,10 +91,11 @@
                                             <source media="(max-width: 699px)" srcset="imagenes/tattoo2movil.png">
                                             <source media="(min-width: 700px)" srcset="imagenes/tattoo2tablet.png">
                                             <img src="imagenes/tattoo2pc.png"
-                                                 alt="Ilustraciones tradicionales hechas por mí" loading="lazy">
+                                                alt="Ilustraciones tradicionales hechas por mí" loading="lazy">
                                         </picture>
                                         <figcaption class="cis-01__cap">
-                                            <span class="cis-01__k">02</span> Desconocido</figcaption>
+                                            <span class="cis-01__k">02</span> Desconocido
+                                        </figcaption>
                                     </figure>
                                 </div>
                                 <div class="foto-placeholder">
@@ -100,10 +104,11 @@
                                             <source media="(max-width: 699px)" srcset="imagenes/tattoo3movil.png">
                                             <source media="(min-width: 700px)" srcset="imagenes/tattoo3tablet.png">
                                             <img src="imagenes/tattoo3pc.png"
-                                                 alt="Ilustraciones tradicionales hechas por mí" loading="lazy">
+                                                alt="Ilustraciones tradicionales hechas por mí" loading="lazy">
                                         </picture>
                                         <figcaption class="cis-01__cap">
-                                            <span class="cis-01__k">03</span> Chica Alien</figcaption>
+                                            <span class="cis-01__k">03</span> Chica Alien
+                                        </figcaption>
                                     </figure>
                                 </div>
                                 <div class="foto-placeholder">
@@ -115,7 +120,8 @@
                                                 alt="Ilustraciones tradicionales hechas por mí" loading="lazy">
                                         </picture>
                                         <figcaption class="cis-01__cap">
-                                            <span class="cis-01__k">04</span> Chica</figcaption>
+                                            <span class="cis-01__k">04</span> Chica
+                                        </figcaption>
                                     </figure>
                                 </div>
                             </div>
@@ -130,9 +136,9 @@
     <script>
         // Video
         window.addEventListener('DOMContentLoaded', () => {
-        const video = document.getElementById('video-mi-app');
-        video.playbackRate = 2.0; 
-    });
+            const video = document.getElementById('video-mi-app');
+            video.playbackRate = 2.0;
+        });
     </script>
 
     <script src="js/bootstrap.bundle.min.js"></script>
