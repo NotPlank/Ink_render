@@ -7,6 +7,7 @@
     <title>✨Ink Render - Stencil✨</title>
     <link rel="stylesheet" href="css/bootstrap.css">
     <link rel="stylesheet" href="estilo.css">
+    <link rel="stylesheet" href="bocadillo-mascota.css">
     <link rel="icon" type="image/jpg" href="imagenes/logofavicon.svg">
 </head>
 
@@ -43,8 +44,7 @@
                             <p class="texto-ayuda">Sube tus fotos o dibujos (JPG o PNG). Puedes subir varios a la vez.</p>
                         </div>
  
-                        <!--------------------  Galeria  ------------------- -->
-                        <div class="galeria-imagenes" id="galeria-imagenes"></div>
+                        <!--------------------  (la galería de subidas vive ahora solo en "Mis Stencils", más abajo)  ------------------- -->
  
                         <!------------------  Modo edicion  -------------------->
                         <div class="modo-edicion d-none" id="modo-edicion">
@@ -157,22 +157,26 @@
                                     <div class="xp-btn close" onclick="window.location.href='index.html'" style="cursor:pointer;" title="Cerrar y volver al inicio">X</div>
                                 </div>
                             </div>
-                            <div class="xp-c text-start d-flex justify-content-center flex-wrap" style="gap: 2rem;">
-                                <div style="flex: 0 1 340px;">
+                            <div class="xp-c text-start d-flex flex-wrap" style="gap: 1.5rem;">
+                                <div class="mis-stencils-columna">
                                     <label class="form-label" style="font-family: sans-serif; font-size: 0.8rem; font-weight: bold;">
                                         📥 Subidas
                                     </label>
-                                    <div id="lista-subidas-panel" class="galeria-imagenes">
-                                        <span class="sin-tatuajes">Aún no has subido ninguna imagen.</span>
+                                    <div class="zona-subida">
+                                        <div id="lista-subidas-panel" class="mis-stencils-lista">
+                                            <span class="sin-tatuajes">Aún no has subido ninguna imagen.</span>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div style="flex: 0 1 340px;">
+                                <div class="mis-stencils-columna">
                                     <label class="form-label" style="font-family: sans-serif; font-size: 0.8rem; font-weight: bold;">
                                         💾 Guardadas
                                     </label>
-                                    <div id="lista-stencils-guardados" style="display: flex; flex-wrap: wrap; gap: 8px; padding: 0.5rem; justify-content: center;">
-                                        <span class="sin-tatuajes">Aún no has guardado ningún resultado.</span>
+                                    <div class="zona-subida">
+                                        <div id="lista-stencils-guardados" class="mis-stencils-lista">
+                                            <span class="sin-tatuajes">Aún no has guardado ningún resultado.</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

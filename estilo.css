@@ -1104,7 +1104,76 @@ canvas {
     color: #777;
     margin-top: 6px;
 }
-
+/*---------------- MIS STENCILS --------------*/
+#panel-mis-stencils .xp-c {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: center;
+}
+.mis-stencils-columna {
+    flex: 1 1 0;
+    min-width: 240px;
+}
+#panel-mis-stencils {
+    width: 130%; 
+    max-width: 100%; 
+    margin: 0 auto;
+}
+.mis-stencils-columna .zona-subida {
+    padding: 1rem;
+    text-align: left;
+    min-height: 90px;
+}
+.mis-stencils-lista {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.stencil-thumb {
+    position: relative;
+    width: 90px;
+    height: 90px;
+    border-radius: 5px;
+    cursor: pointer;
+    overflow: hidden;
+    background-image:
+        linear-gradient(45deg, #ccc 25%, transparent 25%),
+        linear-gradient(-45deg, #ccc 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #ccc 75%),
+        linear-gradient(-45deg, transparent 75%, #ccc 75%);
+    background-size: 12px 12px;
+    background-position: 0 0, 0 6px, 6px -6px, -6px 0px;
+    background-color: #fff;
+    border: 2px solid transparent;
+    transition: border-color 0.15s ease, transform 0.2s ease;
+}
+.stencil-thumb:hover {
+    border-color: #8368cf;
+}
+.stencil-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+.stencil-thumb .btn-eliminar {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1px solid #fff;
+    background: linear-gradient(135deg, #ff7d59, #e12300);
+    color: #fff;
+    font-size: 10px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
 /*---------------- STENCIL: SELECTOR FOTO / DIBUJO --------------*/
 .selector-modo-stencil {
     display: flex;

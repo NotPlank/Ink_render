@@ -1,7 +1,7 @@
 // -----------STENCIL----------- // 
 
 const inputImagenes = document.getElementById('input-imagenes');
-const galeriaImagenes = document.getElementById('galeria-imagenes');
+const galeriaImagenes = document.getElementById('galeria-imagenes'); // ya no existe en el HTML, queda null a propósito
 const modoEdicion = document.getElementById('modo-edicion');
 const zonaSubida = document.getElementById('zona-subida');
 const canvasPreview = document.getElementById('canvas-preview');
@@ -19,6 +19,7 @@ const controlSuavizarLinea = document.getElementById('ajuste-suavizar-linea');
 const controlInvertir = document.getElementById('ajuste-invertir');
 const controlColorFondo = document.getElementById('ajuste-color-fondo');
 const controlTolerancia = document.getElementById('ajuste-tolerancia');
+const controlNitidezDibujo = document.getElementById('ajuste-nitidez-dibujo');
 
 const grupoAjustesFoto = document.getElementById('grupo-ajustes-foto');
 const grupoAjustesDibujo = document.getElementById('grupo-ajustes-dibujo');
@@ -34,7 +35,7 @@ const controlesDibujo = [
 const todosLosControles = [
     controlBrillo, controlContraste, controlNitidez, controlSuavizado,
     controlSensibilidad, controlDetalle, controlGrosor, controlSuavizarLinea,
-    controlColorFondo, controlTolerancia
+    controlColorFondo, controlTolerancia, controlNitidezDibujo
 ];
 
 const btnGuardar = document.getElementById('btn-guardar');
@@ -55,7 +56,8 @@ const VALORES_POR_DEFECTO = {
     suavizarLinea: 0,
     invertir: false,
     colorFondo: '#ffffff',
-    tolerancia: 40
+    tolerancia: 40,
+    nitidezDibujo: 20
 };
 const canvasOriginal = document.createElement('canvas');
 const ctxOriginal = canvasOriginal.getContext('2d', { willReadFrequently: true });
@@ -99,27 +101,16 @@ inputImagenes.addEventListener('change', (evento) => {
 });
 
 function renderizarGaleria() {
-    galeriaImagenes.innerHTML = '';
     if (listaSubidasPanel) listaSubidasPanel.innerHTML = '';
 
     galeria.forEach((item) => {
         const iconoModo = item.modo === 'dibujo' ? '✏️' : '📷';
-        const htmlMiniatura = `
-            <img class="miniatura-img" src="${item.imgElement.src}" alt="${item.nombre}">
-            <span class="miniatura-nombre">${iconoModo} ${item.nombre}</span>
-        `;
 
-        const miniatura = document.createElement('div');
-        miniatura.className = 'miniatura-galeria';
-        miniatura.innerHTML = htmlMiniatura;
-        miniatura.addEventListener('click', () => seleccionarImagen(item.id));
-        galeriaImagenes.appendChild(miniatura);
-
-        // Mismo contenido, reflejado en el panel "Mis Stencils" de abajo
         if (listaSubidasPanel) {
             const miniaturaPanel = document.createElement('div');
-            miniaturaPanel.className = 'miniatura-galeria';
-            miniaturaPanel.innerHTML = htmlMiniatura;
+            miniaturaPanel.className = 'stencil-thumb';
+            miniaturaPanel.title = `${iconoModo} ${item.nombre}`;
+            miniaturaPanel.innerHTML = `<img src="${item.imgElement.src}" alt="${item.nombre}">`;
             miniaturaPanel.addEventListener('click', () => seleccionarImagen(item.id));
             listaSubidasPanel.appendChild(miniaturaPanel);
         }
@@ -157,7 +148,7 @@ function seleccionarImagen(id) {
     restablecerZoom();
 
     zonaSubida.classList.add('d-none');
-    galeriaImagenes.classList.add('d-none');
+    if (galeriaImagenes) galeriaImagenes.classList.add('d-none');
     modoEdicion.classList.remove('d-none');
 
     generarStencil();
@@ -166,7 +157,7 @@ function seleccionarImagen(id) {
 btnVolver.addEventListener('click', () => {
     modoEdicion.classList.add('d-none');
     zonaSubida.classList.remove('d-none');
-    galeriaImagenes.classList.remove('d-none');
+    if (galeriaImagenes) galeriaImagenes.classList.remove('d-none');
     imagenActualId = null;
 });
 
@@ -180,6 +171,21 @@ todosLosControles.forEach((control) => {
 });
 controlInvertir.addEventListener('change', solicitarActualizacion);
 
+// El selector de "Color de fondo" abre el cuentagotas del propio
+// navegador/sistema, que puede coger un color de cualquier parte de
+// la pantalla — incluido el canvas. Pero si el canvas está mostrando
+// el resultado ya procesado (líneas + transparencia), el cuentagotas
+// cogería ese color equivocado. Mientras el selector está abierto,
+// mostramos la imagen original sin procesar; en cuanto se elige un
+// color, el listener de 'input' de arriba ya se encarga de regenerar
+// el resultado normalmente.
+controlColorFondo.addEventListener('focus', () => {
+    const item = galeria.find((i) => i.id === imagenActualId);
+    if (!item) return;
+    ctxPreview.clearRect(0, 0, canvasPreview.width, canvasPreview.height);
+    ctxPreview.drawImage(item.imgElement, 0, 0, canvasPreview.width, canvasPreview.height);
+});
+
 function actualizarEtiquetas() {
     document.getElementById('valor-brillo').textContent = controlBrillo.value;
     document.getElementById('valor-contraste').textContent = controlContraste.value;
@@ -190,6 +196,7 @@ function actualizarEtiquetas() {
     document.getElementById('valor-grosor').textContent = controlGrosor.value;
     document.getElementById('valor-suavizar-linea').textContent = controlSuavizarLinea.value;
     document.getElementById('valor-tolerancia').textContent = controlTolerancia.value;
+    document.getElementById('valor-nitidez-dibujo').textContent = controlNitidezDibujo.value;
 }
 function solicitarActualizacion() {
     if (actualizacionPendiente) return;
@@ -216,6 +223,7 @@ function restablecerAjustes(regenerar) {
     controlInvertir.checked = VALORES_POR_DEFECTO.invertir;
     controlColorFondo.value = VALORES_POR_DEFECTO.colorFondo;
     controlTolerancia.value = VALORES_POR_DEFECTO.tolerancia;
+    controlNitidezDibujo.value = VALORES_POR_DEFECTO.nitidezDibujo;
     actualizarEtiquetas();
     if (regenerar) generarStencil();
 }
@@ -292,6 +300,46 @@ function aplicarNitidez(data, ancho, alto, cantidad) {
     for (let i = 0; i < data.length; i += 4) {
         const valor = clamp(data[i] + (data[i] - suave[i]) * factor);
         data[i] = data[i + 1] = data[i + 2] = valor;
+    }
+}
+
+// Versión para el modo Dibujo: afila cada canal (R, G, B) POR
+// SEPARADO, sin aplanarlos a un único valor de gris. Necesario aquí
+// porque el modo Dibujo compara color contra el color de fondo
+// elegido — si perdiera el color de por medio, esa comparación
+// dejaría de tener sentido.
+function desenfocarColor(data, ancho, alto, iteraciones) {
+    for (let it = 0; it < iteraciones; it++) {
+        const copia = new Uint8ClampedArray(data);
+        for (let y = 1; y < alto - 1; y++) {
+            for (let x = 1; x < ancho - 1; x++) {
+                const idx = (y * ancho + x) * 4;
+                let sumaR = 0, sumaG = 0, sumaB = 0;
+                for (let dy = -1; dy <= 1; dy++) {
+                    for (let dx = -1; dx <= 1; dx++) {
+                        const i2 = ((y + dy) * ancho + (x + dx)) * 4;
+                        sumaR += copia[i2];
+                        sumaG += copia[i2 + 1];
+                        sumaB += copia[i2 + 2];
+                    }
+                }
+                data[idx] = sumaR / 9;
+                data[idx + 1] = sumaG / 9;
+                data[idx + 2] = sumaB / 9;
+            }
+        }
+    }
+}
+
+function aplicarNitidezColor(data, ancho, alto, cantidad) {
+    if (cantidad <= 0) return;
+    const suave = new Uint8ClampedArray(data);
+    desenfocarColor(suave, ancho, alto, 1);
+    const factor = cantidad / 45;
+    for (let i = 0; i < data.length; i += 4) {
+        data[i] = clamp(data[i] + (data[i] - suave[i]) * factor);
+        data[i + 1] = clamp(data[i + 1] + (data[i + 1] - suave[i + 1]) * factor);
+        data[i + 2] = clamp(data[i + 2] + (data[i + 2] - suave[i + 2]) * factor);
     }
 }
 
@@ -536,12 +584,14 @@ function generarStencilDibujo(item) {
     const brillo = parseInt(controlBrillo.value, 10);
     const contraste = parseInt(controlContraste.value, 10);
     const tolerancia = parseInt(controlTolerancia.value, 10);
+    const nitidezDibujo = parseInt(controlNitidezDibujo.value, 10);
     const suavizarLinea = parseInt(controlSuavizarLinea.value, 10);
     const grosor = parseInt(controlGrosor.value, 10);
     const invertir = controlInvertir.checked;
     const colorFondo = hexARgb(controlColorFondo.value);
 
     aplicarBrilloContraste(data, brillo, contraste);
+    aplicarNitidezColor(data, ancho, alto, nitidezDibujo);
 
     let alfa = new Uint8ClampedArray(ancho * alto);
     for (let i = 0, p = 0; i < data.length; i += 4, p++) {
@@ -579,16 +629,9 @@ btnGuardar.addEventListener('click', () => {
 
     canvasPreview.toBlob((blob) => {
         const url = URL.createObjectURL(blob);
-
-        // Descarga inmediata, como ya hacía
-        const enlace = document.createElement('a');
-        enlace.href = url;
-        enlace.download = nombreArchivo;
-        document.body.appendChild(enlace);
-        enlace.click();
-        document.body.removeChild(enlace);
-
-        // Y además queda guardada en el panel para volver a bajarla luego
+        // Se guarda en el panel "Guardadas"; la descarga se hace
+        // desde ahí, haciendo clic en la miniatura (evita descargar
+        // dos veces lo mismo sin querer).
         agregarStencilGuardado(url, nombreArchivo);
     }, 'image/png');
 });
@@ -600,9 +643,9 @@ function agregarStencilGuardado(url, nombreArchivo) {
     if (mensajeVacio) mensajeVacio.remove();
 
     const miniatura = document.createElement('div');
-    miniatura.className = 'tatuaje-thumb';
-    miniatura.title = 'Clic para volver a descargar';
-    miniatura.style.cursor = 'pointer';
+    miniatura.className = 'stencil-thumb';
+    miniatura.title = 'Clic para descargar';
+    miniatura.style.transform = 'scale(0)';
 
     const imagen = document.createElement('img');
     imagen.src = url;
@@ -634,4 +677,5 @@ function agregarStencilGuardado(url, nombreArchivo) {
     });
 
     listaStencilsGuardados.appendChild(miniatura);
+    requestAnimationFrame(() => { miniatura.style.transform = 'scale(1)'; });
 }

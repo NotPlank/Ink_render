@@ -36,7 +36,7 @@
 
         <div style="position: fixed ; top: 300px ; right: -30px ; z-index: 999;">
             <a href="https://instagram.com/davidsfgh" target="_blank">
-                <img src="imagenes/instagram-Logo.svg" alt="Instagram" style=" height: 5rem; width: 7.5rem; filter: hue-rotate(260deg) saturate(1.8); ">
+                <img src="imagenes/instagram-Logo.svg" alt="Instagram" style=" height: 5rem; width: 7.5rem; filter: hue-rotate(265deg) saturate(1.8) contrast(135%) brightness(90%);">
             </a>
         </div>
 
@@ -77,48 +77,29 @@
         let temporizadorOcultar = null;
 
         function mostrarBocadillo(texto) {
-
-            // Mover el bocadillo al documento principal
             window.parent.document.body.appendChild(bocadillo);
-
             const frameMascota = window.frameElement;
-
             if (!frameMascota) return;
-
             const posFrame = frameMascota.getBoundingClientRect();
-
             bocadillo.style.left = `${posFrame.left + (posFrame.width / 2)}px`;
             bocadillo.style.top = `${posFrame.top - 10}px`;
-
             textoBocadillo.textContent = texto;
             bocadillo.classList.add('visible');
-
             clearTimeout(temporizadorOcultar);
-
             temporizadorOcultar = setTimeout(() => {
                 bocadillo.classList.remove('visible');
             }, 5000);
         }
-
         if (mascota) {
-
             mascota.addEventListener('click', () => {
-
-                // 3D → tips específicos
-                // Resto de páginas → tips generales
                 const listaTips = enPagina3D ? tips3D : tipsGenerales;
-
                 if (listaTips.length === 0) return;
-
                 mostrarBocadillo(
                     listaTips[indiceTip % listaTips.length]
                 );
-
                 indiceTip = (indiceTip + 1) % listaTips.length;
             });
         }
-
-        // Recibir mensajes enviados desde otras partes de la web
         window.addEventListener('message', (evento) => {
 
             if (evento.origin !== window.location.origin) return;
@@ -213,13 +194,13 @@
                 alerta.className = "signo-alerta";
                 alerta.innerText = "!";
                 contenedorPet.appendChild(alerta);
-                const puedoMostrarExclamacion = (typeof enPagina3D !== 'undefined') ? enPagina3D : false;
+                const puedoMostrarExclamacion = true;
 
                 if (puedoMostrarExclamacion) {
 
                     setTimeout(() => {
                         alerta.classList.add("activo");
-                    }, 8000);
+                    }, 4000);
 
                     setInterval(() => {
                         if (!alerta.classList.contains("activo") && Math.random() > 0.3) {
