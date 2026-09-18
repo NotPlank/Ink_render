@@ -30,7 +30,7 @@ document.getElementById('header-placeholder').innerHTML = `
                                         <a class="nav-link" href="faq.html">F.A.Q</a>
                                     </li>
                                     <li class="nav-item ms-auto">
-                                        <a class="nav-link" href="contacto.html">Contacto</a>
+                                        <a class="nav-link" href="contacto.php">Contacto</a>
                                     </li>
                                 </ul>
                             </div>

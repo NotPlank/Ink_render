@@ -37,7 +37,8 @@
                                     <picture>
                                         <source media="(max-width: 700px)" srcset="imagenes/tattoo1movil.png">
                                         <source media="(min-width: 701px)" srcset="imagenes/tattoo1tablet.png">
-                                        <img src="imagenes/tattoo1pc.png" alt="Ilustración realizada a mano que muestra los detalles principales de la obra.">
+                                        <img src="imagenes/tattoo1pc.png"
+                                            alt="Ilustración realizada a mano que muestra los detalles principales de la obra.">
 
                                     </picture>
                                     <figcaption class="cis-01__cap"><span class="cis-01__k">01</span>Alien</figcaption>
@@ -46,25 +47,30 @@
                                     <picture>
                                         <source media="(max-width: 700px)" srcset="imagenes/tattoo2movil.png">
                                         <source media="(min-width: 700px)" srcset="imagenes/tattoo2tablet.png">
-                                        <img src="imagenes/tattoo2pc.png" alt="Ilustración realizada a mano que muestra los detalles principales de la obra.">
+                                        <img src="imagenes/tattoo2pc.png"
+                                            alt="Ilustración realizada a mano que muestra los detalles principales de la obra.">
 
                                     </picture>
-                                    <figcaption class="cis-01__cap"><span class="cis-01__k">02</span>Desconocido</figcaption>
+                                    <figcaption class="cis-01__cap"><span class="cis-01__k">02</span>Desconocido
+                                    </figcaption>
                                 </figure>
                                 <figure class="cis-01__slide">
                                     <picture>
                                         <source media="(max-width: 700px)" srcset="imagenes/tattoo3movil.png">
                                         <source media="(min-width: 700px)" srcset="imagenes/tattoo3tablet.png">
-                                        <img src="imagenes/tattoo3pc.png" alt="Ilustración realizada a mano que muestra los detalles principales de la obra.">
+                                        <img src="imagenes/tattoo3pc.png"
+                                            alt="Ilustración realizada a mano que muestra los detalles principales de la obra.">
 
                                     </picture>
-                                    <figcaption class="cis-01__cap"><span class="cis-01__k">03</span>Chica Alien</figcaption>
+                                    <figcaption class="cis-01__cap"><span class="cis-01__k">03</span>Chica Alien
+                                    </figcaption>
                                 </figure>
                                 <figure class="cis-01__slide">
                                     <picture>
                                         <source media="(max-width: 700px)" srcset="imagenes/tattoo4movil.png">
                                         <source media="(min-width: 700px)" srcset="imagenes/tattoo4tablet.png">
-                                        <img src="imagenes/tattoo4pc.png" alt="Ilustración realizada a mano que muestra los detalles principales de la obra.">
+                                        <img src="imagenes/tattoo4pc.png"
+                                            alt="Ilustración realizada a mano que muestra los detalles principales de la obra.">
 
                                     </picture>
                                     <figcaption class="cis-01__cap"><span class="cis-01__k">04</span>Chica</figcaption>
@@ -96,6 +102,18 @@
         </main>
         <div id="footer-placeholder"></div>
     </div>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const track = document.querySelector('.cis-01__track');
+            if (!track) return;
+            const slides = track.querySelectorAll('.cis-01__slide');
+            if (slides.length === 0) return;
+            const primerClon = slides[0].cloneNode(true);
+            const ultimoClon = slides[slides.length - 1].cloneNode(true);
+            track.insertBefore(ultimoClon, slides[0]);
+            track.appendChild(primerClon);
+        });
+    </script>
     <script src="js/bootstrap.bundle.min.js"></script>
     <script src="header.js"></script>
     <script src="footer.js"></script>

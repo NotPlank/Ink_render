@@ -170,15 +170,6 @@ todosLosControles.forEach((control) => {
     });
 });
 controlInvertir.addEventListener('change', solicitarActualizacion);
-
-// El selector de "Color de fondo" abre el cuentagotas del propio
-// navegador/sistema, que puede coger un color de cualquier parte de
-// la pantalla — incluido el canvas. Pero si el canvas está mostrando
-// el resultado ya procesado (líneas + transparencia), el cuentagotas
-// cogería ese color equivocado. Mientras el selector está abierto,
-// mostramos la imagen original sin procesar; en cuanto se elige un
-// color, el listener de 'input' de arriba ya se encarga de regenerar
-// el resultado normalmente.
 controlColorFondo.addEventListener('focus', () => {
     const item = galeria.find((i) => i.id === imagenActualId);
     if (!item) return;
@@ -303,11 +294,6 @@ function aplicarNitidez(data, ancho, alto, cantidad) {
     }
 }
 
-// Versión para el modo Dibujo: afila cada canal (R, G, B) POR
-// SEPARADO, sin aplanarlos a un único valor de gris. Necesario aquí
-// porque el modo Dibujo compara color contra el color de fondo
-// elegido — si perdiera el color de por medio, esa comparación
-// dejaría de tener sentido.
 function desenfocarColor(data, ancho, alto, iteraciones) {
     for (let it = 0; it < iteraciones; it++) {
         const copia = new Uint8ClampedArray(data);
@@ -459,9 +445,6 @@ function engrosarAlfa(alfa, ancho, alto, iteraciones) {
     return actual;
 }
 
-// Lo opuesto de engrosarAlfa: adelgaza/erosiona la línea (filtro de
-// mínimo). Usado tanto para el lado negativo del slider de Grosor
-// como, combinado con engrosarAlfa, para suavizar la rugosidad.
 function erosionarAlfa(alfa, ancho, alto, iteraciones) {
     let actual = alfa;
     for (let it = 0; it < iteraciones; it++) {
@@ -482,12 +465,6 @@ function erosionarAlfa(alfa, ancho, alto, iteraciones) {
     return actual;
 }
 
-// "Apertura" morfológica (erosionar y luego engrosar el mismo número
-// de veces): elimina pelillos y bordes rugosos de la línea sin
-// cambiar apenas su grosor global, porque lo que erosiona en el primer
-// paso lo recupera en el segundo — salvo las protuberancias sueltas,
-// que desaparecen del todo. Es la herramienta correcta para "líneas
-// menos rugosas" sin sacrificar grosor ni nitidez real del trazo.
 function suavizarMascara(alfa, ancho, alto, iteraciones) {
     if (iteraciones <= 0) return alfa;
     let resultado = erosionarAlfa(alfa, ancho, alto, iteraciones);
@@ -526,30 +503,14 @@ function generarStencilFoto(item) {
     const invertir = controlInvertir.checked;
     aplicarBrilloContraste(data, brillo, contraste);
     aGrises(data);
-
-    //  Reducir ruido 
     if (suavizado > 0) desenfocarCanal(data, ancho, alto, suavizado);
-
-    //  Nitidez
     aplicarNitidez(data, ancho, alto, nitidez);
-
-    //  Detección de bordes
     const { magnitudes, direccionX, direccionY } = sobel(data, ancho, alto);
-
-    //  Adelgazado
     const magnitudesFinas = adelgazarLineas(magnitudes, direccionX, direccionY, ancho, alto);
-
-    //  Doble umbral
     let alfa = construirAlfaConDobleUmbral(magnitudesFinas, ancho, alto, sensibilidad, detalle);
-
-    // Suavizar rugosidad de la línea (quita "pelillos" sin perder grosor)
     if (suavizarLinea > 0) alfa = suavizarMascara(alfa, ancho, alto, suavizarLinea);
-
-    // Grosor de línea (positivo engorda, negativo adelgaza/erosiona)
     if (grosor > 0) alfa = engrosarAlfa(alfa, ancho, alto, grosor);
     else if (grosor < 0) alfa = erosionarAlfa(alfa, ancho, alto, -grosor);
-
-    //   PNG 
     const salida = ctxPreview.createImageData(ancho, alto);
     const colorLinea = invertir ? 255 : 0;
     for (let i = 0; i < alfa.length; i++) {

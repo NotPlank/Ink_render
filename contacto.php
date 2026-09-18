@@ -9,6 +9,7 @@
     <link class="ink-style-ref" rel="stylesheet" href="estilo.css">
     <link class="ink-style-ref" rel="stylesheet" href="bocadillo-mascota.css">
     <link rel="icon" type="image/jpg" href="imagenes/logofavicon.svg">
+</head>
 
 <body>
 
@@ -58,7 +59,7 @@
                                                 style="font-family: sans-serif; font-size: 0.9rem; font-weight: bold; margin: 0;">
                                                 ✏️ Sube tus diseños <span style="color: #87919b;font-size: 0.7rem;">
                                                     (opcional)</span></label>
-                                            <input type="file" id="subir-tatuaje" name="user-artwork[]"
+                                            <input type="file" id="subir-tatuaje" name="subir-tatuaje[]"
                                                 accept="image/png, image/jpeg" multiple class="form-control"
                                                 style="font-family: sans-serif; font-size: 0.95rem; width: 100%;">
 
@@ -68,8 +69,6 @@
                                                     style="font-family: sans-serif; font-size: 0.85rem; color: #87919b;">Aún
                                                     no has subido ningún tatuaje.</span>
                                             </div>
-                                            <input type="checkbox" id="acepta-compartir" name="acepta-compartir"
-                                                required style="margin-top: 3px; accent-color: #8825f8; display: none;">
                                             <label for="acepta-compartir" id="label-compartir"
                                                 style="font-family: sans-serif; font-size: 0.85rem; cursor: pointer; display: flex; align-items: flex-start; gap: 8px; text-align: left; width: 100%; margin-top: 5px;">
                                                 <input type="checkbox" id="acepta-compartir" name="acepta-compartir"

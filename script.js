@@ -2,28 +2,22 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 import { DecalGeometry } from 'three/addons/geometries/DecalGeometry.js';
-// ==========================================
+
 //  CONFIGURACIÓN DE PANTALLA Y ENTORNO
-// ==========================================
+
 const contenedor = document.getElementById('contenedor3d');
 let ancho = contenedor.clientWidth;
 let alto = contenedor.clientHeight;
-
 const scene = new THREE.Scene();
 scene.background = new THREE.Color('#3d3a42');
-
-
 const camera = new THREE.PerspectiveCamera(45, ancho / alto, 0.1, 100);
 camera.position.set(0, 2, 5);
-
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
 renderer.setSize(ancho, alto);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 contenedor.appendChild(renderer.domElement);
-
-
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.05;
@@ -33,23 +27,20 @@ controls.maxDistance = 10;
 controls.target.set(0, 1, 0);
 
 
-// ==========================================
+
 //  ILUMINACIÓN Y ESCENARIO
-// ==========================================
+
 const luzAmbiental = new THREE.AmbientLight(0xffffff, 0.4);
 scene.add(luzAmbiental);
-
 const luzPrincipal = new THREE.DirectionalLight(0xffffff, 1.8);
 luzPrincipal.position.set(5, 8, 20);
 luzPrincipal.castShadow = true;
 luzPrincipal.shadow.mapSize.width = 2048;
 luzPrincipal.shadow.mapSize.height = 2048;
 scene.add(luzPrincipal);
-
 const luzDeRelleno = new THREE.DirectionalLight(0xffffff, 4.4);
 luzDeRelleno.position.set(-5, 4, -5);
 scene.add(luzDeRelleno);
-
 const sueloGeo = new THREE.PlaneGeometry(20, 0);
 const sueloMat = new THREE.ShadowMaterial({ opacity: 0.3 });
 const suelo = new THREE.Mesh(sueloGeo, sueloMat);
@@ -57,9 +48,9 @@ suelo.rotation.x = -Math.PI / 2;
 suelo.receiveShadow = true;
 scene.add(suelo);
 
-// ==========================================
+
 //  CARGA DEL MODELO 3D
-// ==========================================
+
 const modeloGrupo = new THREE.Group();
 scene.add(modeloGrupo);
 const objLoader = new OBJLoader();
@@ -93,28 +84,19 @@ function cargarModeloActual() {
             objeto.position.set(0, 1, 0);
             modeloGrupo.add(objeto);
         },
-        // (progreso) => {
-        //     if (progreso.total) {
-        //         console.log('Cargando modelo: ' + (progreso.loaded / progreso.total * 100).toFixed(0) + '%');
-        //     }
-        // },
-        // (error) => {
-        //     console.error('Error al cargar el modelo OBJ ❌', error);
-        // }
     );
 }
 
 cargarModeloActual(); 
 
-// ==========================================
 //  VARIABLES Y LÓGICA DEL TATUAJE
-// ==========================================
+
 let texturaTatuajeActiva = null;
 const textureLoader = new THREE.TextureLoader();
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
-let escalaTatuaje = 0.3;
+let escalaTatuaje = 0.5;
 let rotacionTatuaje = 0;
 let desplazamientoX = 0;
 let desplazamientoY = 0;
@@ -129,7 +111,8 @@ function crearMaterialDecal() {
         depthTest: true,
         depthWrite: false,
         polygonOffset: true,
-        polygonOffsetFactor: -4
+        polygonOffsetFactor: -8,
+        polygonOffsetUnits: -4
     });
 }
 let materialDecalActual = null;
@@ -138,10 +121,6 @@ window.aplicarTatuaje = function (urlImagen) {
     textureLoader.load(urlImagen, (textura) => {
         textura.minFilter = THREE.LinearFilter;
         textura.colorSpace = THREE.SRGBColorSpace;
-
-        // El proyector del decal (orientado con lookAt) deja la imagen
-        // en espejo horizontal sobre la piel. La volteamos aquí para
-        // que se vea tal cual la subiste, no al revés.
         textura.wrapS = THREE.RepeatWrapping;
         textura.repeat.x = -1;
 
@@ -167,6 +146,32 @@ function avisarMascota(texto) {
     }
 }
 
+function calcularOrientacionDesdeNormal(posicion, normal) {
+    const objetivo = posicion.clone().add(normal);
+    const matrizGiro = new THREE.Matrix4();
+    matrizGiro.lookAt(posicion, objetivo, THREE.Object3D.DEFAULT_UP);
+    const orientacion = new THREE.Euler();
+    orientacion.setFromRotationMatrix(matrizGiro);
+    return orientacion;
+}
+function reproyectarSobreSuperficie(posicionAproximada, normalActual, mallaCuerpo) {
+    const origenRayo = posicionAproximada.clone().addScaledVector(normalActual, 1);
+    const direccionRayo = normalActual.clone().negate();
+
+    const rayoLocal = new THREE.Raycaster(origenRayo, direccionRayo, 0, 2.5);
+    const impactos = rayoLocal.intersectObject(mallaCuerpo, false);
+
+    if (impactos.length === 0) return null;
+
+    const normalReal = impactos[0].face.normal.clone();
+    normalReal.transformDirection(mallaCuerpo.matrixWorld);
+
+    return {
+        posicion: impactos[0].point,
+        normal: normalReal
+    };
+}
+
 function actualizarTatuajeEnTiempoReal() {
     if (!datosUltimoImpacto || (!texturaTatuajeActiva && !materialDecalActual)) return;
     if (!materialDecalActual) materialDecalActual = crearMaterialDecal();
@@ -178,32 +183,57 @@ function actualizarTatuajeEnTiempoReal() {
         if (ultimoTatuajeMalla.geometry) ultimoTatuajeMalla.geometry.dispose();
     }
 
-    const posicionFinal = datosUltimoImpacto.posicion.clone();
-
     const vectorDerecha = new THREE.Vector3(1, 0, 0).applyEuler(datosUltimoImpacto.orientacionBase);
     const vectorArriba = new THREE.Vector3(0, 1, 0).applyEuler(datosUltimoImpacto.orientacionBase);
+    const normalOriginal = new THREE.Vector3(0, 0, -1).applyEuler(datosUltimoImpacto.orientacionBase);
 
-    posicionFinal.addScaledVector(vectorDerecha, desplazamientoX);
-    posicionFinal.addScaledVector(vectorArriba, desplazamientoY);
+    const posicionAproximada = datosUltimoImpacto.posicion.clone();
+    posicionAproximada.addScaledVector(vectorDerecha, desplazamientoX);
+    posicionAproximada.addScaledVector(vectorArriba, desplazamientoY);
 
-    const nuevaOrientacion = datosUltimoImpacto.orientacionBase.clone();
+    let posicionFinal = posicionAproximada;
+    let orientacionParaElDecal = datosUltimoImpacto.orientacionBase;
+
+    if (desplazamientoX !== 0 || desplazamientoY !== 0) {
+        try {
+            const reproyeccion = reproyectarSobreSuperficie(posicionAproximada, normalOriginal, datosUltimoImpacto.mallaCuerpo);
+            if (reproyeccion) {
+                posicionFinal = reproyeccion.posicion;
+                orientacionParaElDecal = calcularOrientacionDesdeNormal(reproyeccion.posicion, reproyeccion.normal);
+            }
+        } catch (error) {
+            console.warn('No se pudo reenganchar el tatuaje a la superficie, usando posición aproximada.', error);
+        }
+    }
+
+    const nuevaOrientacion = orientacionParaElDecal.clone();
     const radianesExtra = (rotacionTatuaje * Math.PI) / 180;
     nuevaOrientacion.z += radianesExtra;
-
-    // La profundidad del proyector NO debe crecer con el tamaño visual
-    // del tatuaje: si escala junto al ancho/alto, un tatuaje grande
-    // atraviesa el cuerpo entero y se estampa también por el otro lado
-    // (p.ej. espalda -> también aparece en el pecho). La dejamos fija,
-    // pequeña, solo lo justo para recortar bien la curvatura de la piel.
-    const PROFUNDIDAD_PROYECTOR = 0.15;
+    const PROFUNDIDAD_PROYECTOR = Math.min(0.15 + escalaTatuaje * 0.08, 0.35);
     const tamañoFinal = new THREE.Vector3(escalaTatuaje, escalaTatuaje, PROFUNDIDAD_PROYECTOR);
 
-    const geometriaDecal = new DecalGeometry(
-        datosUltimoImpacto.mallaCuerpo,
-        posicionFinal,
-        nuevaOrientacion,
-        tamañoFinal
-    );
+    let geometriaDecal;
+    try {
+        geometriaDecal = new DecalGeometry(
+            datosUltimoImpacto.mallaCuerpo,
+            posicionFinal,
+            nuevaOrientacion,
+            tamañoFinal
+        );
+        if (!geometriaDecal.attributes.position || geometriaDecal.attributes.position.count === 0) {
+            throw new Error('Decal vacío tras reengancharlo, reintentando con la posición aproximada.');
+        }
+    } catch (error) {
+        console.warn(error);
+        const orientacionRespaldo = datosUltimoImpacto.orientacionBase.clone();
+        orientacionRespaldo.z += radianesExtra;
+        geometriaDecal = new DecalGeometry(
+            datosUltimoImpacto.mallaCuerpo,
+            posicionAproximada,
+            orientacionRespaldo,
+            tamañoFinal
+        );
+    }
 
     geometriaDecal.applyMatrix4(modeloGrupo.matrixWorld.clone().invert());
 
@@ -230,14 +260,10 @@ contenedor.addEventListener('click', (evento) => {
         const posicion = impactosValidos[0].point;
         const mallaCuerpo = impactosValidos[0].object;
 
-        const orientacionBase = new THREE.Euler();
         const normalDeLaPiel = impactosValidos[0].face.normal.clone();
         normalDeLaPiel.transformDirection(mallaCuerpo.matrixWorld);
 
-        const objetivoCámara = posicion.clone().add(normalDeLaPiel);
-        const matrizGiro = new THREE.Matrix4();
-        matrizGiro.lookAt(posicion, objetivoCámara, THREE.Object3D.DEFAULT_UP);
-        orientacionBase.setFromRotationMatrix(matrizGiro);
+        const orientacionBase = calcularOrientacionDesdeNormal(posicion, normalDeLaPiel);
         escalaTatuaje = 0.5;
         rotacionTatuaje = 0;
         desplazamientoX = 0;
@@ -258,10 +284,7 @@ contenedor.addEventListener('click', (evento) => {
         if (ventanaEditor) ventanaEditor.style.display = 'block';
     }
 });
-
-// ==========================================
 // CONTROLES DEL MODELO 
-// ==========================================
 const pasoMover = 0.1;
 const pasoRotar = 0.05;
 const pasoEscala = 0.1;
@@ -295,7 +318,7 @@ window.resetCamara = function () {
 
 
 const RUTAS_MODELOS = ['modelos/Male.OBJ', 'modelos/Woman.OBJ'];
-const ICONOS_MODELOS = ['🟣', '🔵'];
+const ICONOS_MODELOS = ['⚫', '⚪'];
 let indiceModeloActual = 0;
 
 function cambiarModelo(ruta) {
@@ -368,9 +391,7 @@ function solicitarActualizacionTatuaje() {
     });
 }
 
-// ==========================================
 //  CONTROLES
-// ==========================================
 window.ajustarEscalaTatuaje = function (factor) {
     escalaTatuaje = Math.max(0.05, escalaTatuaje + factor);
     solicitarActualizacionTatuaje();
@@ -399,9 +420,7 @@ window.fijarTatuajeActual = function () {
     console.log("Tatuaje fijado permanentemente en el cuerpo.");
 };
 
-// ==========================================
 //  VENTANA FLOTANTE
-// ==========================================
 (function hacerArrastrable(panel) {
     if (!panel) return;
     const tirador = panel.querySelector('.xp-t');
@@ -432,9 +451,7 @@ window.fijarTatuajeActual = function () {
     tirador.addEventListener('pointercancel', () => { arrastrando = false; });
 })(ventanaEditor);
 
-// ==========================================
 //  GESTOR DE SUBIDA DE ARCHIVOS
-// ==========================================
 const inputTatuajes = document.getElementById('subir-tatuaje');
 const listaTatuajes = document.getElementById('lista-tatuajes');
 window.tatuajesCargados = [];
@@ -488,9 +505,7 @@ inputTatuajes.addEventListener('change', (evento) => {
     evento.target.value = '';
 });
 
-// ==========================================
 //  BUCLE DE RENDERIZADO Y RESIZE
-// ==========================================
 function animate() {
     requestAnimationFrame(animate);
     controls.update();
