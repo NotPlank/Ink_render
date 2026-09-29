@@ -5,7 +5,7 @@
     <!-- Index -->
     <url>
         <loc>https://inkrender.netlify.app/</loc>
-        <lastmod>2026-09-10T20:08:51+05:00</lastmod>
+        <lastmod>2026-09-10T20:08:51+02:00</lastmod>
 
         <video:video>
             <video:thumbnail_loc>https://inkrender.netlify.app/thumbnail-video.jpg</video:thumbnail_loc>
@@ -13,41 +13,39 @@
             <video:description>El video muestra una demostración de cómo funcionan las herramientas de la web.</video:description>
             <video:content_loc>https://inkrender.netlify.app/videos/demostracion.mp4</video:content_loc>
             <video:duration>180</video:duration>
-            <video:rating>4.2</video:rating>
-            <video:view_count>12345</video:view_count>
-            <video:publication_date>2026-09-10T19:20:30+01:00</video:publication_date>
+            <video:publication_date>2026-09-10T19:20:30+02:00</video:publication_date>
             <video:live>no</video:live>
         </video:video>
     </url>
 
     <!-- Simulador 3D -->
     <url>
-        <loc>https://inkrender.netlify.app/simulador</loc>
-        <lastmod>2026-09-10T20:08:51+05:00</lastmod>
+        <loc>https://inkrender.netlify.app/3d</loc>
+        <lastmod>2026-09-10T20:08:51+02:00</lastmod>
     </url>
 
     <!-- Stencil -->
     <url>
         <loc>https://inkrender.netlify.app/stencil</loc>
-        <lastmod>2026-09-10T20:08:51+05:00</lastmod>
+        <lastmod>2026-09-10T20:08:51+02:00</lastmod>
     </url>
 
     <!-- Galería -->
     <url>
         <loc>https://inkrender.netlify.app/galeria</loc>
-        <lastmod>2026-09-10T20:08:51+05:00</lastmod>
+        <lastmod>2026-09-10T20:08:51+02:00</lastmod>
     </url>
 
     <!-- FAQ -->
     <url>
         <loc>https://inkrender.netlify.app/faq</loc>
-        <lastmod>2026-09-10T20:08:51+05:00</lastmod>
+        <lastmod>2026-09-10T20:08:51+02:00</lastmod>
     </url>
 
     <!-- Contacto -->
     <url>
         <loc>https://inkrender.netlify.app/contacto</loc>
-        <lastmod>2026-09-10T20:08:51+05:00</lastmod>
+        <lastmod>2026-09-10T20:08:51+02:00</lastmod>
     </url>
 
 </urlset>
