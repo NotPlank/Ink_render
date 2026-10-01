@@ -1,5 +1,5 @@
 const STORAGE_KEY = "cookiePreferences";
-const GOOGLE_ANALYTICS_ID = "G-XXXXXXXXXX";
+const GOOGLE_ANALYTICS_ID = "G-zcrznflaXA6ctiNeK7sLw16d8G_p2ItCKSc0Ww9tK18";
 //   Id de google real
 
 const banner = document.getElementById("cookie-banner");
