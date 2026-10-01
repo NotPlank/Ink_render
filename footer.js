@@ -10,6 +10,11 @@ document.getElementById('footer-placeholder').innerHTML = `
                     <div class="col-xl-6 col-md-6 col-9 pet-container">
                         <iframe src="pet.html" id="pet-frame" scrolling="no"></iframe>
                     </div>
+        <div class="container footer-links">
+        <a href="politica-cookies.html">Política de cookies</a>
+        <a href="#" id="change-cookie-settings">Configurar cookies</a>
+        <a href="#" id="reset-cookie-settings">Reiniciar consentimiento</a>
+    </div>
         </footer>
 <style>
 footer.fixed-bottom {

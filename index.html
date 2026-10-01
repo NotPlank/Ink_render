@@ -4,23 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <meta name="google-site-verification" content="zcrznflaXA6ctiNeK7sLw16d8G_p2ItCKSc0Ww9tK18">
-    <title>InkRender | Herramientas 3D para tatuajes</title>
+    <title>✨Ink Render✨</title>
     <link rel="stylesheet" href="css/bootstrap.css">
     <link rel="stylesheet" href="estilo.css">
     <link rel="stylesheet" href="bocadillo-mascota.css">
-    <link rel="icon" type="image/svg+xml" href="imagenes/logofavicon.svg">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://inkrender.netlify.app/">
-    <meta property="og:title" content="InkRender | Herramientas 3D para tatuajes">
-    <meta property="og:description"
-        content="Visualiza tus diseños de tatuajes en 3D y prepara tus proyectos con InkRender.">
-    <meta property="og:image" content="https://inkrender.netlify.app/imagenes/logo.png">
-    <meta property="og:site_name" content="InkRender">
-    <meta property="og:locale" content="es_ES">
+    <link rel="stylesheet" href="css/cookies.css">
+    <link rel="icon" type="image/jpg" href="imagenes/logofavicon.svg">
     <script type="importmap">
-
       {
         "imports": {
           "three": "https://unpkg.com",
@@ -150,10 +140,93 @@
             video.playbackRate = 2.0;
         });
     </script>
+    <div id="cookie-banner" class="cookie-banner">
+    <div class="cookie-banner__content">
+
+        <h3 style="color: grey ;font-family: monospace;font-size: small;">Tu privacidad</h3>
+
+        <p style="color: grey;font-family: monospace;font-size: small;">
+            Utilizamos cookies necesarias para el funcionamiento del sitio
+            y, con tu consentimiento, cookies analíticas y de marketing.
+        </p>
+
+        <p style="color: grey;font-family: monospace;font-size: small;">
+            Puedes aceptar todas las cookies, rechazarlas o configurar
+            tus preferencias.
+        </p>
+
+        <div class="cookie-buttons">
+            <button style="color: grey;font-family: monospace;font-size: small;"  id="btn-accept-cookies" class="cookie-button" type="button">
+                Aceptar todas
+            </button>
+
+            <button style="color: grey;font-family: monospace;font-size: small;" id="btn-reject-cookies" class="cookie-button" type="button">
+                Rechazar todas
+            </button>
+
+            <button  style="color: grey;font-family: monospace;font-size: small;" id="btn-configure-cookies" class="cookie-button" type="button">
+                Configurar
+            </button>
+        </div>
+
+        <p style="color: grey;">
+            <a style="color: grey;font-family: monospace;font-size: small;"  href="politica-cookies.html">
+                Más información en nuestra Política de cookies
+            </a>
+        </p>
+
+    </div>
+</div>
+
+<div id="cookie-settings" class="cookie-settings" hidden>
+    <div class="cookie-settings__panel">
+
+        <h4 style="color: grey;font-family: monospace;font-size: small;">Preferencias de cookies</h4>
+
+        <div class="cookie-category">
+            <div>
+                <h4 style="color: grey;font-family: monospace;font-size: small;" >Cookies necesarias</h4>
+                <p style="color: grey;font-family: monospace;font-size: small;" >Son imprescindibles para el funcionamiento de la web.</p>
+            </div>
+
+            <input type="checkbox" checked disabled>
+        </div>
+
+        <div class="cookie-category">
+            <div>
+                <h4 style="color: grey;font-family: monospace;font-size: small;" >Cookies analíticas</h4>
+                <p style="color: grey;font-family: monospace;font-size: small;" >Permiten obtener estadísticas sobre el uso de la web.</p>
+            </div>
+
+            <input type="checkbox" id="cookies-analytics">
+        </div>
+
+        <div class="cookie-category">
+            <div>
+                <h4 style="color: grey;font-family: monospace;font-size: small;" >Cookies de marketing</h4>
+                <p style="color: grey;font-family: monospace;font-size: small;" >Permiten publicidad y medición de campañas.</p>
+            </div>
+
+            <input type="checkbox" id="cookies-marketing">
+        </div>
+
+        <div class="cookie-settings-buttons">
+            <button style="color: grey;font-family: monospace;font-size: small;"  id="save-cookie-settings" class="cookie-button" type="button">
+                Guardar preferencias
+            </button>
+
+            <button style="color: grey;font-family: monospace;font-size: small;"  id="close-cookie-settings" class="cookie-button" type="button">
+                Cancelar
+            </button>
+        </div>
+
+    </div>
+</div>
 
     <script src="js/bootstrap.bundle.min.js"></script>
     <script src="header.js"></script>
     <script src="footer.js"></script>
+    <script src="js/cookies.js"></script>
 </body>
 
 </html>

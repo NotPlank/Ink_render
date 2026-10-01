@@ -1,0 +1,148 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f5f5f5;
+    color: #222;
+    line-height: 1.6;
+}
+
+.container {
+    width: min(1100px, 90%);
+    margin: 0 auto;
+}
+
+.site-header {
+    background: #222;
+    color: white;
+    padding: 30px 0;
+}
+
+.site-footer {
+    margin-top: 40px;
+    background: #222;
+    color: white;
+    padding: 25px 0;
+}
+
+.site-footer a {
+    color: white;
+}
+
+.footer-links {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.content-card {
+    margin-top: 30px;
+    padding: 25px;
+    background: white;
+    border: 1px solid #ddd;
+}
+
+.cookie-banner {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    padding: 10px;
+    background: white;
+    border-top: 1px solid #bbb;
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.12);
+    z-index: 9999;
+}
+
+.cookie-banner[hidden] {
+    display: none;
+}
+
+.cookie-banner__content {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.cookie-banner h2 {
+    margin-top: 0;
+}
+
+.cookie-buttons {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 20px 0;
+}
+
+.cookie-button {
+    padding: 12px 18px;
+    border: 1px solid #333;
+    background: white;
+    color: #444444;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.cookie-button:hover {
+    background: #eee;
+}
+
+.cookie-settings {
+    position: fixed;
+    inset: 0;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+}
+
+.cookie-settings[hidden] {
+    display: none;
+}
+
+.cookie-settings__panel {
+    width: min(700px, 100%);
+    max-height: 90vh;
+    overflow-y: auto;
+    background: white;
+    padding: 25px;
+    border-radius: 8px;
+}
+
+.cookie-category {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 25px;
+    padding: 20px 0;
+    border-top: 1px solid #ddd;
+}
+
+.cookie-category input {
+    width: 22px;
+    height: 22px;
+}
+
+.cookie-settings-buttons {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+@media (max-width: 600px) {
+    .cookie-buttons,
+    .cookie-settings-buttons {
+        flex-direction: column;
+    }
+
+    .cookie-button {
+        width: 100%;
+    }
+}
